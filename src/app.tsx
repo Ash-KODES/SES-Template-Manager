@@ -8,9 +8,8 @@ export function App() {
 
   return (
     <Router>
-      <Home path='/' />
-    {/* <Route path="/" component={<Home/>}/>
-    <Route path="/auth" component={<Auth/>}/> */}
+    <Route path="/" component={Home}/>
+    <Route path="/auth" component={Auth}/>
 
     </Router>
   );
