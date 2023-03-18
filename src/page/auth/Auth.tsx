@@ -6,6 +6,7 @@ import { route } from 'preact-router';
 
 const Auth = () => {
   const [authText, setAuthText] = useState('Authenticate');
+  const [checkbox, setCheckbox] = useState(true)
   const assesKeyRef = useRef<HTMLInputElement>(null);
   const secretKeyRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -19,7 +20,9 @@ const Auth = () => {
       const secretAccessKey = secretKeyRef.current.value;
       setupSesClient({ accessKeyId, secretAccessKey })
       await listTemplates()
-      localStorage.setItem('auth',JSON.stringify({accessKeyId,secretAccessKey}))
+      if(checkbox) {
+        localStorage.setItem('auth',JSON.stringify({accessKeyId,secretAccessKey}))
+      }
       console.log('auth success')
       route('/')
       }
@@ -56,7 +59,12 @@ const Auth = () => {
           />
         </div>
         <div className="save-credential-wrapper">
-          <input type="checkbox" name="save-credential" className='save-crendential-checkbox' checked/>
+          <input
+           type="checkbox" 
+           name="save-credential" 
+           className='save-crendential-checkbox'
+           onChange={()=>setCheckbox(!checkbox)}
+            checked={checkbox}/>
           <span>Save credentials locally</span>
         </div>
         <div className="button-wrapper">
