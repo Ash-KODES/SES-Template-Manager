@@ -1,85 +1,72 @@
-import { useEffect, useRef, useState } from 'preact/hooks'
-import './Auth.css'
-import {ChangeEvent} from 'preact/compat';
-import { listTemplates, setupSesClient } from '../../api/ses';
-import { route } from 'preact-router';
+import { useRef, useState } from "preact/hooks";
+import "./Auth.css";
+import { ChangeEvent } from "preact/compat";
+import { listTemplates, setupSesClient } from "../../api/ses";
+import { route } from "preact-router";
 
 const Auth = () => {
-  const [authText, setAuthText] = useState('Authenticate');
-  const [checkbox, setCheckbox] = useState(true)
-  const assesKeyRef = useRef<HTMLInputElement>(null);
-  const secretKeyRef = useRef<HTMLInputElement>(null);
+  const [authText, setAuthText] = useState("Authenticate");
   const formRef = useRef<HTMLFormElement>(null);
 
-  const handleAuth = async(e:ChangeEvent)=>{
+  const handleAuth = async (e: ChangeEvent) => {
     e.preventDefault();
     try {
-      setAuthText('Authenticating')
-      if(assesKeyRef.current && secretKeyRef.current){
-      const accessKeyId = assesKeyRef.current.value;
-      const secretAccessKey = secretKeyRef.current.value;
-      setupSesClient({ accessKeyId, secretAccessKey })
-      await listTemplates()
-      if(checkbox) {
-        localStorage.setItem('auth',JSON.stringify({accessKeyId,secretAccessKey}))
-      }
-      console.log('auth success')
-      route('/')
+      setAuthText("Authenticating");
+      if (formRef.current) {
+        const data = new FormData(formRef.current);
+        const checkbox = data.get("save-credential-checkbox");
+        const accessKeyId = data.get("accessKeyId") as string;
+        const secretAccessKey = data.get("secretAccessKey") as string;
+        setupSesClient({ accessKeyId, secretAccessKey });
+        await listTemplates();
+        if (checkbox) {
+          localStorage.setItem(
+            "auth",
+            JSON.stringify({ accessKeyId, secretAccessKey })
+          );
+        }
+        console.log("auth success");
+        route("/");
       }
     } catch (error) {
-      console.log(error)
-      setAuthText('Authenticate')
+      console.log(error);
+      setAuthText("Authenticate");
     }
-  }
-
-
-  
-
-
+  };
 
   return (
-    <div className='auth-section'>
+    <div className="auth-section">
       <form className="auth-wrapper" onSubmit={handleAuth} ref={formRef}>
-        <div className="asses-key-wrapper">
-          <label htmlFor="assesKey">AWS Access Key Id</label>
-          <input
-            type="text"
-            className='asses-key-input'
-            name='assesKey'
-            ref={assesKeyRef}
-          />
+        <div className="aws-key-wrapper">
+          <label htmlFor="accessKeyId">AWS Access Key Id</label>
+          <input type="text" className="aws-key-input" name="accessKeyId" />
         </div>
-        <div className="asses-key-wrapper">
-          <label htmlFor="assesKey">AWS Access Key Id</label>
-          <input
-            type="text"
-            className='asses-key-input'
-            name='secretKey'
-            ref={secretKeyRef}
-          />
+        <div className="aws-key-wrapper">
+          <label htmlFor="secretAccessKey">AWS Secret Access Key</label>
+          <input type="text" className="aws-key-input" name="secretAccessKey" />
         </div>
         <div className="save-credential-wrapper">
           <input
-           type="checkbox" 
-           name="save-credential" 
-           className='save-crendential-checkbox'
-           onChange={()=>setCheckbox(!checkbox)}
-            checked={checkbox}/>
-          <span>Save credentials locally</span>
+            type="checkbox"
+            name="save-credential-checkbox"
+            className="save-crendential-checkbox"
+            defaultChecked
+          />
+          <label>Save credentials locally</label>
         </div>
         <div className="button-wrapper">
           <button
-          type='submit'
-          className='auth-button'
-          disabled={authText==='Authenticating'}
-          style={{opacity: authText==='Authenticating' ? '0.7': ''}}
+            type="submit"
+            className="primary-button"
+            disabled={authText === "Authenticating"}
+            style={{ opacity: authText === "Authenticating" ? "0.7" : "" }}
           >
-          {authText}
+            {authText}
           </button>
         </div>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default Auth
+export default Auth;
