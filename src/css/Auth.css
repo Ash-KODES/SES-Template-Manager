@@ -1,0 +1,45 @@
+.auth-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.auth-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 15px;
+  width: 300px;
+}
+
+.aws-key-input {
+  font-size: 16px;
+  outline: none;
+  padding: 6px;
+  border: 1px solid #000000;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.save-credential-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #778699;
+}
+.save-crendential-checkbox {
+  accent-color: #696cff;
+  width: 17px;
+  height: 17px;
+}
+
+.primary-button {
+  background: #696cff;
+  border-radius: 6px;
+  border: none;
+  color: white;
+  width: 100%;
+  padding: 10px;
+  cursor: pointer;
+}
