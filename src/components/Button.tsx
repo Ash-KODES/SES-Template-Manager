@@ -1,32 +1,14 @@
-interface Props {
-  id?: string;
-  className?: string;
-  onClick?: () => void;
-  type: string;
-  isDisabled?: boolean;
-  value: string;
-  opacity?: string;
+import { HTMLAttributes } from "preact/compat";
+
+interface Props extends HTMLAttributes<HTMLButtonElement> {
+  label: string;
+  variant: "primary" | "secondary";
 }
 
-const Button = ({
-  id,
-  className,
-  type,
-  isDisabled,
-  onClick,
-  value,
-  opacity,
-}: Props) => {
+const Button = ({ label, className, variant = "primary", ...rest }: Props) => {
   return (
-    <button
-      id={id}
-      className={`btn ${className}`}
-      onClick={onClick}
-      type={type}
-      disabled={isDisabled}
-      style={{ opacity: opacity }}
-    >
-      {value}
+    <button className={`btn ${variant} ${className ?? ""}`} {...rest}>
+      {label}
     </button>
   );
 };
