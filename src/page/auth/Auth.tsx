@@ -5,6 +5,7 @@ import { listTemplates, setupSesClient } from "../../api/ses";
 import { route } from "preact-router";
 import Button from "@components/Button";
 import Input from "@components/Input";
+import { AuthSchema } from "@/schema/forms-schema";
 
 const Auth = () => {
   const [authText, setAuthText] = useState("Authenticate");
@@ -15,13 +16,16 @@ const Auth = () => {
     try {
       setAuthText("Authenticating");
       if (formRef.current) {
-        const data = new FormData(formRef.current);
-        const checkbox = data.get("save-credential-checkbox");
-        const accessKeyId = data.get("accessKeyId") as string;
-        const secretAccessKey = data.get("secretAccessKey") as string;
+        const formData = new FormData(formRef.current);
+        // you will have all the values here
+        const formDataObj = Object.fromEntries(formData.entries());
+
+        const parsedFormVal = AuthSchema.parse(formDataObj);
+        const { accessKeyId, secretAccessKey } = parsedFormVal;
         setupSesClient({ accessKeyId, secretAccessKey });
+
         await listTemplates();
-        if (checkbox) {
+        if (parsedFormVal["save-credential-checkbox"]) {
           localStorage.setItem(
             "auth",
             JSON.stringify({ accessKeyId, secretAccessKey })
@@ -69,11 +73,9 @@ const Auth = () => {
         </div>
         <div className="button-wrapper">
           <Button
-            type={"submit"}
-            className={"primary-button"}
-            isDisabled={authText === "Authenticating"}
-            value={authText}
-            opacity={authText === "Authenticating" ? "0.7" : ""}
+            type="submit"
+            disabled={authText === "Authenticating"}
+            label={authText}
           />
         </div>
       </form>
