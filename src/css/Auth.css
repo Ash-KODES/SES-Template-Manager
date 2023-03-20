@@ -34,7 +34,7 @@
   height: 17px;
 }
 
-.primary-button {
+.btn.primary {
   background: #696cff;
   border-radius: 6px;
   border: none;
