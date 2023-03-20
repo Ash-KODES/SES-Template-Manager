@@ -1,5 +1,5 @@
 import { useRef, useState } from "preact/hooks";
-import "./Auth.css";
+import "@css/Auth.css";
 import { ChangeEvent } from "preact/compat";
 import { listTemplates, setupSesClient } from "../../api/ses";
 import { route } from "preact-router";
@@ -38,21 +38,34 @@ const Auth = () => {
     <div className="auth-section">
       <form className="auth-wrapper" onSubmit={handleAuth} ref={formRef}>
         <div className="aws-key-wrapper">
-          <label htmlFor="accessKeyId">AWS Access Key Id</label>
-          <input type="text" className="aws-key-input" name="accessKeyId" />
+          <label htmlFor="access-key">AWS Access Key Id</label>
+          <input
+            type="text"
+            className="aws-key-input"
+            name="accessKeyId"
+            id="access-key"
+            required
+          />
         </div>
         <div className="aws-key-wrapper">
-          <label htmlFor="secretAccessKey">AWS Secret Access Key</label>
-          <input type="text" className="aws-key-input" name="secretAccessKey" />
+          <label htmlFor="secret-access">AWS Secret Access Key</label>
+          <input
+            type="text"
+            className="aws-key-input"
+            name="secretAccessKey"
+            id="secret-access"
+            required
+          />
         </div>
         <div className="save-credential-wrapper">
           <input
             type="checkbox"
             name="save-credential-checkbox"
             className="save-crendential-checkbox"
+            id="crendential-checkbox"
             defaultChecked
           />
-          <label>Save credentials locally</label>
+          <label htmlFor="crendential-checkbox">Save credentials locally</label>
         </div>
         <div className="button-wrapper">
           <button
