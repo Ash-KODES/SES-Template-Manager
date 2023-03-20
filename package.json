@@ -11,7 +11,8 @@
   "dependencies": {
     "preact": "^10.13.0",
     "preact-router": "^4.1.0",
-    "wouter": "^2.10.0"
+    "wouter": "^2.10.0",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@aws-sdk/client-sesv2": "^3.292.0",
