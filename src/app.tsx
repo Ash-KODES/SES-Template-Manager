@@ -1,7 +1,7 @@
 import "@css/index.css";
 import { Router, Route } from "preact-router";
-import Home from "./page/Home/Home";
-import Auth from "./page/auth/Auth";
+import Home from "./page/Home";
+import Auth from "./page/Auth";
 
 export function App() {
   return (
