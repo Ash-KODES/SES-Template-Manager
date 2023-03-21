@@ -5,6 +5,8 @@ interface Props {
   inputName: string;
   required?: boolean;
   defaultChecked?: boolean;
+  placeholder?: string;
+  autoComplete?: string;
 }
 
 const Input = ({
@@ -14,6 +16,8 @@ const Input = ({
   inputName,
   required,
   defaultChecked,
+  placeholder,
+  autoComplete,
 }: Props) => {
   return (
     <input
@@ -23,6 +27,8 @@ const Input = ({
       name={inputName}
       required={required}
       defaultChecked={defaultChecked}
+      placeholder={placeholder}
+      autoComplete={autoComplete}
     />
   );
 };
