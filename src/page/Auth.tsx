@@ -1,11 +1,12 @@
 import { useRef, useState } from "preact/hooks";
 import "@css/auth.css";
 import { ChangeEvent } from "preact/compat";
-import { listTemplates, setupSesClient } from "../api/ses";
+import { listTemplates, setupSesClient } from "@api/ses";
 import { route } from "preact-router";
 import Button from "@components/Button";
 import Input from "@components/Input";
 import { AuthSchema } from "@/schema/forms-schema";
+import CheckBoxInput from "@components/CheckBoxInput";
 
 const Auth = () => {
   const [authText, setAuthText] = useState("Authenticate");
@@ -19,7 +20,7 @@ const Auth = () => {
         const formData = new FormData(formRef.current);
         // you will have all the values here
         const formDataObj = Object.fromEntries(formData.entries());
-        console.log("checkbox", formDataObj["save-credential-checkbox"]);
+
         const parsedFormVal = AuthSchema.parse(formDataObj);
         const { accessKeyId, secretAccessKey } = parsedFormVal;
         setupSesClient({ accessKeyId, secretAccessKey });
@@ -43,42 +44,26 @@ const Auth = () => {
   return (
     <div className="auth-section">
       <form className="auth-wrapper" onSubmit={handleAuth} ref={formRef}>
-        <div className="aws-key-wrapper">
-          <label htmlFor="access-key" className="input-label">
-            AWS Access Key Id
-          </label>
-          <Input
-            type="text"
-            className="aws-key-input"
-            inputName="accessKeyId"
-            id="access-key"
-            placeholder="Enter access key"
-            required
-          />
-        </div>
-        <div className="aws-key-wrapper">
-          <label htmlFor="secret-access" className="input-label">
-            AWS Secret Access Key
-          </label>
-          <Input
-            type="password"
-            className="aws-key-input"
-            inputName="secretAccessKey"
-            id="secret-access"
-            placeholder="Enter secret key"
-            required
-            autoComplete="on"
-          />
-        </div>
+        <Input
+          label="AWS Access Key Id"
+          type="text"
+          name="accessKeyId"
+          placeholder="Enter access key"
+        />
+        <Input
+          label="AWS Secret Access Key"
+          type="password"
+          name="secretAccessKey"
+          placeholder="Enter secret key"
+          autoComplete="on"
+        />
         <div className="save-credential-wrapper">
-          <Input
+          <CheckBoxInput
             type="checkbox"
-            inputName="save-credential-checkbox"
-            className="save-crendential-checkbox"
-            id="crendential-checkbox"
+            name="save-credential-checkbox"
             defaultChecked
+            label="Save credentials locally"
           />
-          <label htmlFor="crendential-checkbox">Save credentials locally</label>
         </div>
         <div className="button-wrapper">
           <Button
