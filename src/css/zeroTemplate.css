@@ -1,0 +1,33 @@
+.zero-template-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 55px;
+}
+.create-template-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+.create-message-wrapper {
+  text-align: center;
+}
+.create-message-wrapper p {
+  font-size: 14px;
+  line-height: 22px;
+  color: #778699;
+  margin-top: 5px;
+}
+.create-template-wrapper .btn.primary {
+  width: 50%;
+}
+.vector-wrapper {
+  height: 265px;
+  width: 389px;
+}
+.vector-wrapper img {
+  width: 100%;
+  height: 100%;
+}
