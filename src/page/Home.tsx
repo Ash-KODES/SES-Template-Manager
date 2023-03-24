@@ -27,7 +27,11 @@ const Home = () => {
   return (
     <div className="home-section">
       <div className="template-wrapper">
-        {templateList.length ? <TemplateList /> : <ZeroTemplate />}
+        {templateList.length ? (
+          <TemplateList templateList={templateList} />
+        ) : (
+          <ZeroTemplate />
+        )}
       </div>
     </div>
   );
