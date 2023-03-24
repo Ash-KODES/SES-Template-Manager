@@ -7,8 +7,26 @@ import menuIcon from "@assets/menu.svg";
 import "@css/templateList.css";
 import CheckBoxInput from "@components/CheckBoxInput";
 import IconButton from "./IconButton";
+import { EmailTemplateMetadata } from "@aws-sdk/client-sesv2";
+import { useState } from "preact/hooks";
 
-const TemplateList = () => {
+interface Props {
+  templateList: EmailTemplateMetadata[];
+}
+
+const TemplateList = ({ templateList }: Props) => {
+  const [isPopUp, setIsPopUp] = useState(false);
+  const [isActiveIndex, setisActiveIndex] = useState<number>();
+
+  const handlePopUp = (index: number) => {
+    if (isActiveIndex === index) {
+      return setIsPopUp(!isPopUp);
+    } else {
+      setisActiveIndex(index), setIsPopUp(!isPopUp);
+    }
+  };
+
+  // console.log({ isActiveIndex, isPopUp });
   return (
     <div className="template-list-wrapper">
       <div className="top-navigation-wrapper">
@@ -43,28 +61,59 @@ const TemplateList = () => {
             <th>Creation date</th>
           </tr>
 
-          {Array(5)
-            .fill(1)
-            .map((val, index) => (
-              <tr key={index}>
-                <td className="checkbox-data">
-                  <CheckBoxInput type="checkbox" label="Email verification" />
-                </td>
-                <td>06 Feb 2023</td>
-                <td className="edit-wrapper">
-                  <IconButton
-                    type="button"
-                    label="Edit"
-                    src={editIcon}
-                    alt="edit"
-                  />
-                </td>
-                <td className="menue-wrapper">
-                  <img src={menuIcon} alt="menue" />
-                  <div className="popup-menue"></div>
-                </td>
-              </tr>
-            ))}
+          {templateList.map((template, index) => (
+            <tr key={index}>
+              <td className="checkbox-data">
+                <CheckBoxInput
+                  type="checkbox"
+                  label={template.TemplateName as string}
+                />
+              </td>
+              <td>
+                {template.CreatedTimestamp?.toLocaleDateString("en-in", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })}
+              </td>
+              <td className="edit-wrapper">
+                <IconButton
+                  type="button"
+                  label="Edit"
+                  src={editIcon}
+                  alt="edit"
+                />
+
+                {isActiveIndex === index && (
+                  <dialog
+                    className={`popup-menue ${isPopUp ? "show-popup" : ""}`}
+                    open={isPopUp}
+                  >
+                    <IconButton
+                      type="button"
+                      label="Download"
+                      src={downloadIcon}
+                      alt="download"
+                    />
+                    <IconButton
+                      type="button"
+                      label="Delete"
+                      src={removeIcon}
+                      alt="delete"
+                    />
+                  </dialog>
+                )}
+              </td>
+              <td>
+                <img
+                  className="menue-wrapper"
+                  src={menuIcon}
+                  alt="menue"
+                  onClick={() => handlePopUp(index)}
+                />
+              </td>
+            </tr>
+          ))}
         </table>
       </div>
     </div>
