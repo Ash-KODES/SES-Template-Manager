@@ -1,10 +1,34 @@
-import "@css/Home.css";
+import "@css/home.css";
+import { listTemplates, setupSesClient } from "@api/ses";
+import { useEffect, useState } from "preact/hooks";
+import ZeroTemplate from "@components/ZeroTemplate";
+import { EmailTemplateMetadata } from "@aws-sdk/client-sesv2";
+import TemplateList from "@components/TemplateList";
 
 const Home = () => {
+  const localData = JSON.parse(localStorage.getItem("auth") as string);
+
+  const [templateList, setTemplateList] = useState<EmailTemplateMetadata[]>([]);
+
+  const getTemplateList = async () => {
+    if (localData !== null) {
+      const { accessKeyId, secretAccessKey } = localData;
+      setupSesClient({ accessKeyId, secretAccessKey });
+    }
+    const response = await listTemplates();
+    // console.log(response);
+    setTemplateList(response.TemplatesMetadata!);
+  };
+
+  useEffect(() => {
+    getTemplateList();
+  }, []);
+  console.log(templateList);
   return (
     <div className="home-section">
-      <h1>Templates</h1>
-      <div className="template-wrapper"></div>
+      <div className="template-wrapper">
+        {templateList.length ? <TemplateList /> : <ZeroTemplate />}
+      </div>
     </div>
   );
 };
