@@ -10,8 +10,7 @@
   margin-top: 20px;
 }
 
-.search-form {
-  height: 100%;
+.top-navigation-wrapper .search-input-wrapper {
   width: 50%;
 }
 
