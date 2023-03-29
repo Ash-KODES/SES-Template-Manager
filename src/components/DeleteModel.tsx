@@ -2,7 +2,7 @@ import lockContainerIcon from "@assets/lockContainer.svg";
 import "@css/deletemodel.css";
 import Input from "@components/Input";
 import Button from "@components/Button";
-import { StateUpdater, useRef } from "preact/hooks";
+import { StateUpdater, useRef, useState } from "preact/hooks";
 import { ChangeEvent } from "preact/compat";
 import { deleteTemplate } from "@api/ses";
 
@@ -17,6 +17,7 @@ interface Props {
 const DeleteModel = ({ templateName, setIsDeleteClick }: Props) => {
   const deleteRef = useRef(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // hide model when clicked outside
   window.onclick = (e) => {
@@ -28,22 +29,25 @@ const DeleteModel = ({ templateName, setIsDeleteClick }: Props) => {
 
   const handleDelete = async (e: ChangeEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       if (formRef.current) {
         const formData = new FormData(formRef.current);
-        const formDataObj = Object.fromEntries(formData.entries());
-        const templateInputName = formDataObj.templateInputName;
+        const templateInputName = formData.get("templateInputName");
         console.log(templateInputName);
         if (templateInputName === templateName) {
           await deleteTemplate({ TemplateName: templateInputName });
           console.log(`${templateInputName} is deleted successfully`);
+          setIsLoading(false);
           setIsDeleteClick({ isDeleteModel: false, templateName });
         } else {
           console.log("template name not matched");
+          setIsLoading(false);
         }
       }
     } catch (error) {
       console.log(error);
+      setIsLoading(false);
     }
   };
 
@@ -65,8 +69,14 @@ const DeleteModel = ({ templateName, setIsDeleteClick }: Props) => {
               name="templateInputName"
               placeholder="Enter your email template name to proceed"
               label="Your template name"
+              required
             />
-            <Button type="submit" label="Delete this template" />
+            <Button
+              type="submit"
+              className={isLoading ? "btn-loading" : ""}
+              disabled={isLoading}
+              label={`${isLoading ? "" : "Delete this template"}`}
+            />
           </form>
         </div>
       </div>
