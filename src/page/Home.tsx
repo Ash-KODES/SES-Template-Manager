@@ -1,9 +1,9 @@
 import "@css/home.css";
 import { listTemplates, setupSesClient } from "@api/ses";
 import { useEffect, useState } from "preact/hooks";
-import ZeroTemplate from "@components/ZeroTemplate";
 import { EmailTemplateMetadata } from "@aws-sdk/client-sesv2";
 import TemplateList from "@components/TemplateList";
+import NoTemplate from "@components/NoTemplate";
 
 const Home = () => {
   const localData = JSON.parse(localStorage.getItem("auth") as string);
@@ -30,7 +30,7 @@ const Home = () => {
         {templateList.length ? (
           <TemplateList templateList={templateList} />
         ) : (
-          <ZeroTemplate />
+          <NoTemplate />
         )}
       </div>
     </div>
