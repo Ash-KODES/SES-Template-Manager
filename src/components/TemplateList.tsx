@@ -8,7 +8,7 @@ import "@css/templateList.css";
 import CheckBoxInput from "@components/CheckBoxInput";
 import IconButton from "@components/IconButton";
 import { EmailTemplateMetadata } from "@aws-sdk/client-sesv2";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import DeleteModel from "@components/DeleteModel";
 
 interface Props {
@@ -25,11 +25,20 @@ const TemplateList = ({ templateList }: Props) => {
     templateName: "",
   });
 
+  const tempListRef = useRef(null);
+
   const handlePopUp = (index: number) => {
     if (isActiveIndex === index) {
       return setIsPopUp(!isPopUp);
     } else {
       setisActiveIndex(index), setIsPopUp(!isPopUp);
+    }
+  };
+
+  // hide model when clicked outside
+  window.onclick = (e) => {
+    if (e.target === tempListRef.current) {
+      setIsPopUp(false);
     }
   };
 
@@ -53,7 +62,7 @@ const TemplateList = ({ templateList }: Props) => {
   // console.log({ searchTerms, templateData, filterData });
 
   return (
-    <div className="template-list-wrapper">
+    <div className="template-list-wrapper" ref={tempListRef}>
       <div className="top-navigation-wrapper">
         <SearchInput
           type="text"
@@ -112,7 +121,7 @@ const TemplateList = ({ templateList }: Props) => {
 
                   {isActiveIndex === index && (
                     <dialog
-                      className={`popup-menue ${isPopUp ? "show-popup" : ""}`}
+                      className={`popup-menu ${isPopUp ? "show-popup" : ""}`}
                       open={isPopUp}
                     >
                       <IconButton
@@ -136,9 +145,9 @@ const TemplateList = ({ templateList }: Props) => {
                 </td>
                 <td>
                   <img
-                    className="menue-wrapper"
+                    className="menu-icon"
                     src={menuIcon}
-                    alt="menue"
+                    alt="menu"
                     onClick={() => handlePopUp(index)}
                   />
                 </td>
