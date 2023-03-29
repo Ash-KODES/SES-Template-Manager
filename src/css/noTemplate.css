@@ -1,4 +1,4 @@
-.zero-template-wrapper {
+.no-template-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -20,8 +20,17 @@
   color: #778699;
   margin-top: 5px;
 }
-.create-template-wrapper .btn.primary {
+.create-template-wrapper a {
   width: 50%;
+  background: #696cff;
+  border-radius: 6px;
+  text-align: center;
+  color: white;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  text-decoration: none;
+  padding: 12px 6px;
 }
 .vector-wrapper {
   height: 265px;

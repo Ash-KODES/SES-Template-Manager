@@ -62,7 +62,7 @@ td {
   line-height: 22px;
 }
 
-.popup-menue {
+.popup-menu {
   position: absolute;
   flex-direction: column;
   gap: 10px;
@@ -80,18 +80,18 @@ td {
   display: flex;
 }
 
-.popup-menue button {
+.popup-menu button {
   padding: 10px !important;
   width: 100% !important;
 }
-.popup-menue button:hover {
+.popup-menu button:hover {
   background: #696cff;
   color: white;
 }
-.popup-menue button:hover img {
+.popup-menu button:hover img {
   filter: brightness(4);
 }
 
-.menue-wrapper {
+.menu-icon {
   cursor: pointer;
 }
