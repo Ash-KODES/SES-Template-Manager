@@ -1,25 +1,16 @@
-import { route } from "preact-router";
-import "@css/zeroTemplate.css";
-import Button from "./Button";
+import { Link } from "preact-router";
+import "@css/noTemplate.css";
 import noMessageSvg from "@assets/no_messages.svg";
 
-const ZeroTemplate = () => {
-  const handleRedirect = () => {
-    route("/new");
-  };
-
+const NoTemplate = () => {
   return (
-    <div className="zero-template-wrapper">
+    <div className="no-template-wrapper">
       <div className="create-template-wrapper">
         <div className="create-message-wrapper">
           <h2>It's lonely out here.</h2>
           <p>Make your emails talk. Start by creating your first template!</p>
         </div>
-        <Button
-          type="button"
-          label="Create Template"
-          onClick={handleRedirect}
-        />
+        <Link href={"/new"}>Create Template</Link>
       </div>
       <div className="vector-wrapper">
         <img src={noMessageSvg} alt="noMessageSvg" />
@@ -28,4 +19,4 @@ const ZeroTemplate = () => {
   );
 };
 
-export default ZeroTemplate;
+export default NoTemplate;
