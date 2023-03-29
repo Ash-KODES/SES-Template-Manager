@@ -42,6 +42,9 @@
       ],
       "@schema/*": [
         "src/schema/*"
+      ],
+      "@constant/*": [
+        "src/constant/*"
       ]
     }
   },
