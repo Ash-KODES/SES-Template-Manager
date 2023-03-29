@@ -8,6 +8,7 @@ export const AuthSchema = z.object({
 
 export const CreateTemplateSchema = z.object({
   templateName: z.string().min(5),
+  templateSubject: z.string().min(5),
   templateText: z.string().min(5),
   tempalteHtml: z.string().min(10),
 });
