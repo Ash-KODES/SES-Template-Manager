@@ -39,3 +39,6 @@
 .delete-content-wrapper .btn.primary {
   background-color: #ff3e1d;
 }
+.delete-content-wrapper .btn-loading {
+  background-color: #fc6045;
+}
