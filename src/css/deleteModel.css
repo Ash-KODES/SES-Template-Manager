@@ -1,0 +1,41 @@
+.delete-model-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+  backdrop-filter: blur(3px);
+  background: #030303c4;
+}
+.delete-model-wrapper {
+  width: 50%;
+  background: white;
+  border-radius: 9px;
+}
+.delete-head-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  border-bottom: 1px solid #d7e1ea;
+}
+.delete-content-wrapper {
+  padding: 15px;
+}
+.delete-content-wrapper p {
+  font-size: 14px;
+  color: #778699;
+  margin-bottom: 15px;
+}
+.delete-content-wrapper form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.delete-content-wrapper .btn.primary {
+  background-color: #ff3e1d;
+}

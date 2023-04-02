@@ -7,7 +7,7 @@ import {
 } from "preact-router";
 import Home from "@page/Home";
 import Auth from "@page/Auth";
-import AddNewTemplate from "@page/AddNewTemplate";
+import AddTemplate from "@page/AddTemplate";
 import { useState } from "preact/hooks";
 
 export function App() {
@@ -27,7 +27,7 @@ export function App() {
     >
       <Route path="/" component={Home} />
       <Route path="/auth" component={Auth} />
-      <Route path="/new" component={AddNewTemplate} />
+      <Route path="/new" component={AddTemplate} />
     </Router>
   );
 }
