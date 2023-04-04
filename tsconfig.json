@@ -45,6 +45,9 @@
       ],
       "@constant/*": [
         "src/constant/*"
+      ],
+      "@hooks/*": [
+        "src/hooks/*"
       ]
     }
   },
