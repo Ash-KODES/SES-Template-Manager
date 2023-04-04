@@ -1,13 +1,15 @@
 import Button from "@components/Button";
 import Input from "@components/Input";
 import TextArea from "@components/TextArea";
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useRef } from "preact/hooks";
+import { ChangeEvent } from "preact/compat";
+import { route } from "preact-router";
+
+import useGetTemplate from "@/hooks/useGetTemplate";
+import { CreateTemplateSchema } from "@/schema/forms-schema";
 import "@css/editTemplate.css";
 import { setupSesClient, updateTemplate } from "@api/ses";
-import { ChangeEvent } from "preact/compat";
-import { CreateTemplateSchema } from "@/schema/forms-schema";
-import { route } from "preact-router";
-import useGetTemplate from "@/hooks/useGetTemplate";
+
 interface Props {
   templateName: string;
 }
@@ -15,15 +17,14 @@ interface Props {
 const EditTemplate = ({ templateName }: Props) => {
   const localData = JSON.parse(localStorage.getItem("auth") as string);
   const formRef = useRef<HTMLFormElement>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
 
-  const data = useGetTemplate(templateName);
-  console.log(data);
-  console.log(data.res);
+  const { data, isLoading } = useGetTemplate(templateName);
+  // console.log(data.res);
 
   const handleUpdate = async (e: ChangeEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    // setIsLoading(true);
     try {
       if (localData !== null) {
         const { accessKeyId, secretAccessKey } = localData;
@@ -44,14 +45,16 @@ const EditTemplate = ({ templateName }: Props) => {
         const TemplateName = templateName;
         await updateTemplate({ TemplateContent, TemplateName });
         console.log("template update success");
-        setIsLoading(false);
+        // setIsLoading(false);
         route("/");
       }
     } catch (error) {
       console.log(error);
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   };
+  console.log("rendered");
+  // console.log(isLoading.value);
 
   return (
     <div className="edit-template-container">
@@ -67,24 +70,12 @@ const EditTemplate = ({ templateName }: Props) => {
           type="text"
           label="Template subject"
           name="templateSubject"
-          value={data.res?.Subject}
-        />
-        <TextArea
-          label="Template Text"
-          name="templateText"
-          value={data.res?.Text}
-        />
-        <TextArea
-          label="Template HTML"
-          name="tempalteHtml"
-          value={data.res?.Html}
-        />
-        <Button
-          type="submit"
-          className={isLoading ? "btn-loading" : ""}
+          value={data.Subject}
           disabled={isLoading}
-          label={`${isLoading ? "" : "Save changes"}`}
         />
+        <TextArea label="Template Text" name="templateText" value={data.Text} />
+        <TextArea label="Template HTML" name="tempalteHtml" value={data.Html} />
+        <Button type="submit" isLoading={isLoading} label="Save changes" />
       </form>
     </div>
   );
