@@ -4,6 +4,7 @@ specifiers:
   '@aws-sdk/client-sesv2': ^3.292.0
   '@aws-sdk/types': ^3.292.0
   '@preact/preset-vite': ^2.5.0
+  '@preact/signals': ^1.1.3
   '@types/node': ^18.15.3
   preact: ^10.13.0
   preact-router: ^4.1.0
@@ -14,6 +15,7 @@ specifiers:
   zod: ^3.21.4
 
 dependencies:
+  '@preact/signals': 1.1.3_preact@10.13.1
   preact: 10.13.1
   preact-router: 4.1.0_preact@10.13.1
   wouter: 2.10.0
@@ -1265,6 +1267,19 @@ packages:
       - preact
       - supports-color
     dev: true
+
+  /@preact/signals-core/1.2.3:
+    resolution: {integrity: sha512-Kui4p7PMcEQevBgsTO0JBo3gyQ88Q3qzEvsVCuSp11t0JcN4DmGCTJcGRVSCq7Bn7lGxJBO+57jNSzDoDJ+QmA==}
+    dev: false
+
+  /@preact/signals/1.1.3_preact@10.13.1:
+    resolution: {integrity: sha512-N09DuAVvc90bBZVRwD+aFhtGyHAmJLhS3IFoawO/bYJRcil4k83nBOchpCEoS0s5+BXBpahgp0Mjf+IOqP57Og==}
+    peerDependencies:
+      preact: 10.x
+    dependencies:
+      '@preact/signals-core': 1.2.3
+      preact: 10.13.1
+    dev: false
 
   /@prefresh/babel-plugin/0.4.4:
     resolution: {integrity: sha512-/EvgIFMDL+nd20WNvMO0JQnzIl1EJPgmSaSYrZUww7A+aSdKsi37aL07TljrZR1cBMuzFxcr4xvqsUQLFJEukw==}
