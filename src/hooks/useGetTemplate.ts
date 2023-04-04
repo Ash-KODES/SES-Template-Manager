@@ -1,38 +1,47 @@
 import { getTemplate } from "@api/ses";
-import { useEffect } from "preact/hooks";
-import { signal } from "@preact/signals";
+import { batch, ReadonlySignal, signal } from "@preact/signals";
 
-const data = signal({
-  res: { Html: "", Subject: "", Text: "" },
-  isLoading: true,
-  isError: "",
-});
+type HookResponse = {
+  data: {
+    Html: ReadonlySignal<string>;
+    Subject: ReadonlySignal<string>;
+    Text: ReadonlySignal<string>;
+  };
+  isLoading: ReadonlySignal<boolean>;
+  error: ReadonlySignal<string>;
+};
 
 const useGetTemplate = (TemplateName: string) => {
-  const getData = async (): Promise<void> => {
+  const { Html, Subject, Text } = {
+    Html: signal(""),
+    Subject: signal(""),
+    Text: signal(""),
+  };
+
+  const isLoading = signal(true);
+  const error = signal<null | string>(null);
+
+  const getData = async () => {
     try {
       const response = await getTemplate({ TemplateName });
       // console.log(response);
-      data.value.res = {
-        Html: response.TemplateContent?.Html!,
-        Subject: response.TemplateContent?.Subject!,
-        Text: response.TemplateContent?.Text!,
-      };
-      data.value.isLoading = false;
+      batch(() => {
+        Html.value = response.TemplateContent?.Html!;
+        Subject.value = response.TemplateContent?.Subject!;
+        Text.value = response.TemplateContent?.Text!;
+      });
     } catch (err) {
-      console.log(err);
       if (err instanceof Error) {
-        data.value.isError = err.message;
-        data.value.isLoading = false;
+        error.value = err.message;
       }
+    } finally {
+      isLoading.value = false;
     }
   };
 
-  useEffect(() => {
-    getData();
-  }, []);
+  getData();
 
-  return data.value;
+  return { data: { Html, Subject, Text }, isLoading, error } as HookResponse;
 };
 
 export default useGetTemplate;
