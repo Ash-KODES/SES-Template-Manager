@@ -27,6 +27,9 @@ label {
   font-weight: 400;
   font-size: 14px;
   line-height: 22px;
+}
+
+.input::placeholder {
   color: #778699;
 }
 
@@ -91,6 +94,9 @@ label {
   font-weight: 400;
   font-size: 14px;
   line-height: 22px;
+}
+
+.textarea::placeholder {
   color: #778699;
 }
 
