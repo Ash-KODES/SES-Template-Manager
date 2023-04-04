@@ -1,5 +1,5 @@
 import lockContainerIcon from "@assets/lockContainer.svg";
-import "@css/deletemodel.css";
+import "@css/deleteModel.css";
 import Input from "@components/Input";
 import Button from "@components/Button";
 import { StateUpdater, useRef, useState } from "preact/hooks";
