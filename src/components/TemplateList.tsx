@@ -10,6 +10,7 @@ import IconButton from "@components/IconButton";
 import { EmailTemplateMetadata } from "@aws-sdk/client-sesv2";
 import { useEffect, useRef, useState } from "preact/hooks";
 import DeleteModel from "@components/DeleteModel";
+import { route } from "preact-router";
 
 interface Props {
   templateList: EmailTemplateMetadata[];
@@ -61,6 +62,11 @@ const TemplateList = ({ templateList }: Props) => {
 
   // console.log({ searchTerms, templateData, filterData });
 
+  // redirect to edit page
+  const handelRedirect = (templateName: string) => {
+    route(`/edit/${templateName}`);
+  };
+
   return (
     <div className="template-list-wrapper" ref={tempListRef}>
       <div className="top-navigation-wrapper">
@@ -88,74 +94,81 @@ const TemplateList = ({ templateList }: Props) => {
       </div>
       <div className="template-data-container">
         <table className="tabel">
-          <tr>
-            <th className="checkbox-data">
-              <CheckBoxInput type="checkbox" label="Template Name" />
-            </th>
-            <th>Creation date</th>
-          </tr>
+          <thead>
+            <tr>
+              <th className="checkbox-data">
+                <CheckBoxInput type="checkbox" label="Template Name" />
+              </th>
+              <th>Creation date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filterData.length ? (
+              templateData.map((template, index) => (
+                <tr key={index}>
+                  <td className="checkbox-data">
+                    <CheckBoxInput
+                      type="checkbox"
+                      label={template.TemplateName as string}
+                    />
+                  </td>
+                  <td>
+                    {template.CreatedTimestamp?.toLocaleDateString("en-in", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </td>
+                  <td className="edit-wrapper">
+                    <IconButton
+                      type="button"
+                      label="Edit"
+                      src={editIcon}
+                      alt="edit"
+                      onClick={() =>
+                        template.TemplateName &&
+                        handelRedirect(template.TemplateName)
+                      }
+                    />
 
-          {filterData.length ? (
-            templateData.map((template, index) => (
-              <tr key={index}>
-                <td className="checkbox-data">
-                  <CheckBoxInput
-                    type="checkbox"
-                    label={template.TemplateName as string}
-                  />
-                </td>
-                <td>
-                  {template.CreatedTimestamp?.toLocaleDateString("en-in", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </td>
-                <td className="edit-wrapper">
-                  <IconButton
-                    type="button"
-                    label="Edit"
-                    src={editIcon}
-                    alt="edit"
-                  />
-
-                  {isActiveIndex === index && (
-                    <dialog
-                      className={`popup-menu ${isPopUp ? "show-popup" : ""}`}
-                      open={isPopUp}
-                    >
-                      <IconButton
-                        type="button"
-                        label="Download"
-                        src={downloadIcon}
-                        alt="download"
-                      />
-                      <IconButton
-                        type="button"
-                        label="Delete"
-                        src={removeIcon}
-                        alt="delete"
-                        onClick={() =>
-                          template.TemplateName &&
-                          handleDeleteClick(template.TemplateName)
-                        }
-                      />
-                    </dialog>
-                  )}
-                </td>
-                <td>
-                  <img
-                    className="menu-icon"
-                    src={menuIcon}
-                    alt="menu"
-                    onClick={() => handlePopUp(index)}
-                  />
-                </td>
-              </tr>
-            ))
-          ) : (
-            <div>No Result Found</div>
-          )}
+                    {isActiveIndex === index && (
+                      <dialog
+                        className={`popup-menu ${isPopUp ? "show-popup" : ""}`}
+                        open={isPopUp}
+                      >
+                        <IconButton
+                          type="button"
+                          label="Download"
+                          src={downloadIcon}
+                          alt="download"
+                        />
+                        <IconButton
+                          type="button"
+                          label="Delete"
+                          src={removeIcon}
+                          alt="delete"
+                          onClick={() =>
+                            template.TemplateName &&
+                            handleDeleteClick(template.TemplateName)
+                          }
+                        />
+                      </dialog>
+                    )}
+                  </td>
+                  <td>
+                    <img
+                      className="menu-icon"
+                      src={menuIcon}
+                      alt="menu"
+                      onClick={() => handlePopUp(index)}
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <div>No Result Found</div>
+            )}
+          </tbody>
         </table>
       </div>
       {isDeleteClick.isDeleteModel ? (

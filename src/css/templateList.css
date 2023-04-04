@@ -13,7 +13,9 @@
 .top-navigation-wrapper .search-input-wrapper {
   width: 50%;
 }
-
+.template-data-container {
+  max-width: 950px;
+}
 table {
   width: 100%;
   margin-top: 20px;
