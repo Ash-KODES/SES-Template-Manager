@@ -9,6 +9,8 @@ import Home from "@page/Home";
 import Auth from "@page/Auth";
 import AddTemplate from "@page/AddTemplate";
 import { useState } from "preact/hooks";
+import EditTemplate from "@page/EditTemplate";
+import { setupSesClient } from "@api/ses";
 
 export function App() {
   let [currentUrl, setcurrentUrl] = useState(getCurrentUrl());
@@ -20,6 +22,11 @@ export function App() {
     setcurrentUrl("/auth");
   }
 
+  if (localData !== null) {
+    const { accessKeyId, secretAccessKey } = localData;
+    setupSesClient({ accessKeyId, secretAccessKey });
+  }
+
   return (
     <Router
       url={currentUrl}
@@ -28,6 +35,7 @@ export function App() {
       <Route path="/" component={Home} />
       <Route path="/auth" component={Auth} />
       <Route path="/new" component={AddTemplate} />
+      <Route path="/edit/:templateName" component={EditTemplate} />
     </Router>
   );
 }
