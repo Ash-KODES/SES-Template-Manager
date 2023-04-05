@@ -11,9 +11,10 @@ import { EmailTemplateMetadata } from "@aws-sdk/client-sesv2";
 import { useEffect, useRef, useState } from "preact/hooks";
 import DeleteModel from "@components/DeleteModel";
 import { route } from "preact-router";
+import { ReadonlySignal, useComputed } from "@preact/signals";
 
 interface Props {
-  templateList: EmailTemplateMetadata[];
+  templateList: ReadonlySignal<EmailTemplateMetadata[]>;
 }
 
 const TemplateList = ({ templateList }: Props) => {
@@ -46,8 +47,10 @@ const TemplateList = ({ templateList }: Props) => {
   // console.log({ isActiveIndex, isPopUp });
 
   // search Templates
-  const filterData = templateList.filter((val) =>
-    val.TemplateName?.toLowerCase().includes(searchTerms.toLowerCase())
+  const filterData = useComputed(() =>
+    templateList.value.filter((val) =>
+      val.TemplateName?.toLowerCase().includes(searchTerms.toLowerCase())
+    )
   );
 
   useEffect(() => {
