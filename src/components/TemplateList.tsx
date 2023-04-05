@@ -106,71 +106,67 @@ const TemplateList = ({ templateList }: Props) => {
             </tr>
           </thead>
           <tbody>
-            {filterData.length ? (
-              templateData.map((template, index) => (
-                <tr key={index}>
-                  <td className="checkbox-data">
-                    <CheckBoxInput
-                      type="checkbox"
-                      label={template.TemplateName as string}
-                    />
-                  </td>
-                  <td>
-                    {template.CreatedTimestamp?.toLocaleDateString("en-in", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </td>
-                  <td className="edit-wrapper">
-                    <IconButton
-                      type="button"
-                      label="Edit"
-                      src={editIcon}
-                      alt="edit"
-                      onClick={() =>
-                        template.TemplateName &&
-                        handelRedirect(template.TemplateName)
-                      }
-                    />
+            {templateData.value.map((template, index) => (
+              <tr key={index}>
+                <td className="checkbox-data">
+                  <CheckBoxInput
+                    type="checkbox"
+                    label={template.TemplateName as string}
+                  />
+                </td>
+                <td>
+                  {template.CreatedTimestamp?.toLocaleDateString("en-in", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </td>
+                <td className="edit-wrapper">
+                  <IconButton
+                    type="button"
+                    label="Edit"
+                    src={editIcon}
+                    alt="edit"
+                    onClick={() =>
+                      template.TemplateName &&
+                      handelRedirect(template.TemplateName)
+                    }
+                  />
 
-                    {isActiveIndex === index && (
-                      <dialog
-                        className={`popup-menu ${isPopUp ? "show-popup" : ""}`}
-                        open={isPopUp}
-                      >
-                        <IconButton
-                          type="button"
-                          label="Download"
-                          src={downloadIcon}
-                          alt="download"
-                        />
-                        <IconButton
-                          type="button"
-                          label="Delete"
-                          src={removeIcon}
-                          alt="delete"
-                          onClick={() =>
-                            template.TemplateName &&
-                            handleDeleteClick(template.TemplateName)
-                          }
-                        />
-                      </dialog>
-                    )}
-                  </td>
-                  <td>
-                    <img
-                      className="menu-icon"
-                      src={menuIcon}
-                      alt="menu"
-                      onClick={() => handlePopUp(index)}
-                    />
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <div>No Result Found</div>
-            )}
+                  {isActiveIndex === index && (
+                    <dialog
+                      className={`popup-menu ${isPopUp ? "show-popup" : ""}`}
+                      open={isPopUp}
+                    >
+                      <IconButton
+                        type="button"
+                        label="Download"
+                        src={downloadIcon}
+                        alt="download"
+                      />
+                      <IconButton
+                        type="button"
+                        label="Delete"
+                        src={removeIcon}
+                        alt="delete"
+                        onClick={() =>
+                          template.TemplateName &&
+                          handleDeleteClick(template.TemplateName)
+                        }
+                      />
+                    </dialog>
+                  )}
+                </td>
+                <td>
+                  <img
+                    className="menu-icon"
+                    src={menuIcon}
+                    alt="menu"
+                    onClick={() => handlePopUp(index)}
+                  />
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

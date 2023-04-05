@@ -2,15 +2,25 @@ import "@css/home.css";
 import TemplateList from "@components/TemplateList";
 import NoTemplate from "@components/NoTemplate";
 import useListTemplate from "@/hooks/useListTemplate";
+import { useEffect } from "preact/hooks";
 
 const Home = () => {
-  const data = useListTemplate();
-  console.log(data);
+  const { data, isLoading } = useListTemplate();
+
+  console.log("rendered");
+
+  if (isLoading.value) {
+    return <h1>Loading...</h1>;
+  }
 
   return (
     <div className="home-section">
       <div className="template-wrapper">
-        {data ? <TemplateList templateList={data} /> : <NoTemplate />}
+        {data.value.length ? (
+          <TemplateList templateList={data} />
+        ) : (
+          <NoTemplate />
+        )}
       </div>
     </div>
   );

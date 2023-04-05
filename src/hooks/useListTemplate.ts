@@ -4,17 +4,18 @@ import { batch, signal, ReadonlySignal } from "@preact/signals";
 import { useEffect, useState } from "preact/hooks";
 
 type HookResponse = {
-  data: { TemplatesMetadata: ReadonlySignal<EmailTemplateMetadata[]> };
+  data: ReadonlySignal<EmailTemplateMetadata[]>;
   isLoading: ReadonlySignal<boolean>;
   error: ReadonlySignal<string>;
 };
-const useListTemplate = () => {
-  const { TemplatesMetadata } = {
-    TemplatesMetadata: signal<EmailTemplateMetadata[]>([]),
-  };
-  const isLoading = signal(true);
-  const error = signal<null | string>(null);
 
+const { TemplatesMetadata } = {
+  TemplatesMetadata: signal<EmailTemplateMetadata[]>([]),
+};
+const isLoading = signal(true);
+const error = signal<null | string>(null);
+
+const useListTemplate = () => {
   const getData = async () => {
     try {
       const response = await listTemplates();
@@ -33,7 +34,7 @@ const useListTemplate = () => {
     getData();
   }, []);
   // getData();
-  return { data: { TemplatesMetadata }, error, isLoading } as HookResponse;
+  return { data: TemplatesMetadata, error, isLoading } as HookResponse;
 };
 
 export default useListTemplate;
