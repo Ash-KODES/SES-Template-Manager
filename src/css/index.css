@@ -85,7 +85,6 @@ label {
 .textarea {
   width: 100%;
   height: 100px;
-  resize: none;
   outline: none;
   padding: 8px 12px;
   border: 1px solid #d7e1ea;
