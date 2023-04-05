@@ -1,32 +1,39 @@
 import { listTemplates } from "@api/ses";
 import { EmailTemplateMetadata } from "@aws-sdk/client-sesv2";
+import { batch, signal, ReadonlySignal } from "@preact/signals";
 import { useEffect, useState } from "preact/hooks";
 
+type HookResponse = {
+  data: { TemplatesMetadata: ReadonlySignal<EmailTemplateMetadata[]> };
+  isLoading: ReadonlySignal<boolean>;
+  error: ReadonlySignal<string>;
+};
 const useListTemplate = () => {
-  const [data, setData] = useState<EmailTemplateMetadata[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState<string>("");
+  const { TemplatesMetadata } = {
+    TemplatesMetadata: signal<EmailTemplateMetadata[]>([]),
+  };
+  const isLoading = signal(true);
+  const error = signal<null | string>(null);
 
   const getData = async () => {
     try {
       const response = await listTemplates();
       // console.log(response);
-      setData(response.TemplatesMetadata!);
-      setIsLoading(false);
+      TemplatesMetadata.value = response.TemplatesMetadata!;
     } catch (err) {
       console.log(err);
       if (err instanceof Error) {
-        setIsError(err.message);
+        error.value = err.message;
       }
-      setIsLoading(false);
+    } finally {
+      isLoading.value = false;
     }
   };
-
   useEffect(() => {
     getData();
   }, []);
-
-  return { data, isError, isLoading };
+  // getData();
+  return { data: { TemplatesMetadata }, error, isLoading } as HookResponse;
 };
 
 export default useListTemplate;

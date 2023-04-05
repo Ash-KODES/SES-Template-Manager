@@ -1,19 +1,16 @@
 import "@css/home.css";
-import { listTemplates, setupSesClient } from "@api/ses";
-import { useEffect, useState } from "preact/hooks";
-import { EmailTemplateMetadata } from "@aws-sdk/client-sesv2";
 import TemplateList from "@components/TemplateList";
 import NoTemplate from "@components/NoTemplate";
-import useTemplateList from "@/hooks/useListTemplate";
+import useListTemplate from "@/hooks/useListTemplate";
 
 const Home = () => {
-  const { data, isLoading, isError } = useTemplateList();
-  console.log({ data, isLoading, isError });
+  const data = useListTemplate();
+  console.log(data);
 
   return (
     <div className="home-section">
       <div className="template-wrapper">
-        {data.length ? <TemplateList templateList={data} /> : <NoTemplate />}
+        {data ? <TemplateList templateList={data} /> : <NoTemplate />}
       </div>
     </div>
   );
