@@ -2,11 +2,10 @@ import "@css/home.css";
 import TemplateList from "@components/TemplateList";
 import NoTemplate from "@components/NoTemplate";
 import useListTemplate from "@/hooks/useListTemplate";
-import { useEffect } from "preact/hooks";
 
 const Home = () => {
   const { data, isLoading } = useListTemplate();
-
+  // console.log(data.value);
   console.log("rendered");
 
   if (isLoading.value) {
