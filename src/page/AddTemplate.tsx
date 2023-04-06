@@ -1,26 +1,23 @@
 import { Placeholder } from "@/constant/placeholders";
 import { CreateTemplateSchema } from "@/schema/forms-schema";
-import { addNewTemplate, setupSesClient } from "@api/ses";
+import { addNewTemplate } from "@api/ses";
 import Button from "@components/Button";
 import Input from "@components/Input";
 import TextArea from "@components/TextArea";
 import "@css/addTemplate.css";
+import { signal } from "@preact/signals";
 import { route } from "preact-router";
-import { ChangeEvent, useRef, useState } from "preact/compat";
+import { ChangeEvent, useRef } from "preact/compat";
+
+const isLoading = signal(false);
 
 const AddTemplate = () => {
-  const localData = JSON.parse(localStorage.getItem("auth") as string);
   const formRef = useRef<HTMLFormElement>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleCreate = async (e: ChangeEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    isLoading.value = true;
     try {
-      if (localData !== null) {
-        const { accessKeyId, secretAccessKey } = localData;
-        setupSesClient({ accessKeyId, secretAccessKey });
-      }
       if (formRef.current) {
         const formData = new FormData(formRef.current);
         const formDataObj = Object.fromEntries(formData.entries());
@@ -36,12 +33,12 @@ const AddTemplate = () => {
         const TemplateName = templateName;
         await addNewTemplate({ TemplateContent, TemplateName });
         console.log("template created success");
-        setIsLoading(false);
+        isLoading.value = false;
         route("/");
       }
     } catch (error) {
       console.log(error);
-      setIsLoading(false);
+      isLoading.value = false;
     }
   };
 
@@ -73,9 +70,9 @@ const AddTemplate = () => {
         />
         <Button
           type="submit"
-          className={isLoading ? "btn-loading" : ""}
+          isLoading={isLoading}
           disabled={isLoading}
-          label={`${isLoading ? "" : "Create Template"}`}
+          label={"Create Template"}
         />
       </form>
     </div>

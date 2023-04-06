@@ -8,7 +8,7 @@ import { route } from "preact-router";
 import useGetTemplate from "@/hooks/useGetTemplate";
 import { CreateTemplateSchema } from "@/schema/forms-schema";
 import "@css/editTemplate.css";
-import { setupSesClient, updateTemplate } from "@api/ses";
+import { updateTemplate } from "@api/ses";
 
 interface Props {
   templateName: string;
@@ -26,10 +26,6 @@ const EditTemplate = ({ templateName }: Props) => {
     e.preventDefault();
     // setIsLoading(true);
     try {
-      if (localData !== null) {
-        const { accessKeyId, secretAccessKey } = localData;
-        setupSesClient({ accessKeyId, secretAccessKey });
-      }
       if (formRef.current) {
         const formData = new FormData(formRef.current);
         const formDataObj = Object.fromEntries(formData.entries());
