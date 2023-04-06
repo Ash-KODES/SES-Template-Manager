@@ -2,10 +2,10 @@ import lockContainerIcon from "@assets/lockContainer.svg";
 import "@css/deleteModel.css";
 import Input from "@components/Input";
 import Button from "@components/Button";
-import { StateUpdater, useRef, useState } from "preact/hooks";
+import { useRef } from "preact/hooks";
 import { ChangeEvent } from "preact/compat";
-import { deleteTemplate } from "@api/ses";
 import { Signal, signal } from "@preact/signals";
+import useDeleteTemplate from "@/hooks/useDeleteTemplate";
 
 interface Props {
   isDeleteClick: Signal<{
@@ -31,25 +31,12 @@ const DeleteModel = ({ templateName, isDeleteClick }: Props) => {
   const handleDelete = async (e: ChangeEvent) => {
     e.preventDefault();
     isLoading.value = true;
-    try {
-      if (formRef.current) {
-        const formData = new FormData(formRef.current);
-        const templateInputName = formData.get("templateInputName");
-        console.log(templateInputName);
-        if (templateInputName === templateName) {
-          await deleteTemplate({ TemplateName: templateInputName });
-          console.log(`${templateInputName} is deleted successfully`);
-          isLoading.value = false;
-          isDeleteClick.value = { isDeleteModel: false, templateName };
-        } else {
-          console.log("template name not matched");
-          isLoading.value = false;
-        }
-      }
-    } catch (error) {
-      console.log(error);
-      isLoading.value = false;
-    }
+    await useDeleteTemplate({
+      formRef,
+      templateName,
+      isDeleteClick,
+    });
+    isLoading.value = false;
   };
 
   return (
