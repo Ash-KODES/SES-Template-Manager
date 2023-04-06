@@ -5,31 +5,32 @@ import Button from "@components/Button";
 import { StateUpdater, useRef, useState } from "preact/hooks";
 import { ChangeEvent } from "preact/compat";
 import { deleteTemplate } from "@api/ses";
+import { Signal, signal } from "@preact/signals";
 
 interface Props {
-  setIsDeleteClick: StateUpdater<{
+  isDeleteClick: Signal<{
     isDeleteModel: boolean;
     templateName: string;
   }>;
   templateName: string;
 }
+const isLoading = signal(false);
 
-const DeleteModel = ({ templateName, setIsDeleteClick }: Props) => {
+const DeleteModel = ({ templateName, isDeleteClick }: Props) => {
   const deleteRef = useRef(null);
   const formRef = useRef<HTMLFormElement>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   // hide model when clicked outside
   window.onclick = (e) => {
     if (e.target === deleteRef.current) {
-      setIsDeleteClick({ isDeleteModel: false, templateName });
+      isDeleteClick.value = { isDeleteModel: false, templateName };
     }
   };
   // console.log(templateName);
 
   const handleDelete = async (e: ChangeEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    isLoading.value = true;
     try {
       if (formRef.current) {
         const formData = new FormData(formRef.current);
@@ -38,16 +39,16 @@ const DeleteModel = ({ templateName, setIsDeleteClick }: Props) => {
         if (templateInputName === templateName) {
           await deleteTemplate({ TemplateName: templateInputName });
           console.log(`${templateInputName} is deleted successfully`);
-          setIsLoading(false);
-          setIsDeleteClick({ isDeleteModel: false, templateName });
+          isLoading.value = false;
+          isDeleteClick.value = { isDeleteModel: false, templateName };
         } else {
           console.log("template name not matched");
-          setIsLoading(false);
+          isLoading.value = false;
         }
       }
     } catch (error) {
       console.log(error);
-      setIsLoading(false);
+      isLoading.value = false;
     }
   };
 
@@ -73,9 +74,8 @@ const DeleteModel = ({ templateName, setIsDeleteClick }: Props) => {
             />
             <Button
               type="submit"
-              className={isLoading ? "btn-loading" : ""}
-              disabled={isLoading}
-              label={`${isLoading ? "" : "Delete this template"}`}
+              isLoading={isLoading}
+              label="Delete this template"
             />
           </form>
         </div>
