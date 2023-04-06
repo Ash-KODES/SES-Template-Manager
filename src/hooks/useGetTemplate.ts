@@ -10,17 +10,16 @@ type HookResponse = {
   isLoading: ReadonlySignal<boolean>;
   error: ReadonlySignal<string>;
 };
+const { Html, Subject, Text } = {
+  Html: signal(""),
+  Subject: signal(""),
+  Text: signal(""),
+};
+
+const isLoading = signal(true);
+const error = signal<null | string>(null);
 
 const useGetTemplate = (TemplateName: string) => {
-  const { Html, Subject, Text } = {
-    Html: signal(""),
-    Subject: signal(""),
-    Text: signal(""),
-  };
-
-  const isLoading = signal(true);
-  const error = signal<null | string>(null);
-
   const getData = async () => {
     try {
       const response = await getTemplate({ TemplateName });
