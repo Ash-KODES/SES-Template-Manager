@@ -1,7 +1,7 @@
 import { listTemplates } from "@api/ses";
 import { EmailTemplateMetadata } from "@aws-sdk/client-sesv2";
-import { batch, signal, ReadonlySignal } from "@preact/signals";
-import { useEffect, useState } from "preact/hooks";
+import { signal, ReadonlySignal } from "@preact/signals";
+import { useEffect } from "preact/hooks";
 
 type HookResponse = {
   data: ReadonlySignal<EmailTemplateMetadata[]>;
