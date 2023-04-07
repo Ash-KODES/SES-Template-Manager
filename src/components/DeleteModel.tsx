@@ -19,6 +19,7 @@ const isLoading = signal(false);
 const DeleteModel = ({ templateName, isDeleteClick }: Props) => {
   const deleteRef = useRef(null);
   const formRef = useRef<HTMLFormElement>(null);
+  const getDelete = useDeleteTemplate();
 
   // hide model when clicked outside
   window.onclick = (e) => {
@@ -31,11 +32,12 @@ const DeleteModel = ({ templateName, isDeleteClick }: Props) => {
   const handleDelete = async (e: ChangeEvent) => {
     e.preventDefault();
     isLoading.value = true;
-    await useDeleteTemplate({
+    const deleteTemp = await getDelete({
       formRef,
       templateName,
       isDeleteClick,
     });
+    console.log(deleteTemp);
     isLoading.value = false;
   };
 

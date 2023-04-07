@@ -17,6 +17,7 @@ import {
   signal,
   useSignalEffect,
 } from "@preact/signals";
+import useDownload from "@/hooks/useDownload";
 
 interface Props {
   templateList: ReadonlySignal<EmailTemplateMetadata[]>;
@@ -33,6 +34,7 @@ const isDeleteClick = signal({
 
 const TemplateList = ({ templateList }: Props) => {
   const tempListRef = useRef(null);
+  const downloadFn = useDownload();
 
   const handlePopUp = (index: number) => {
     if (isActiveIndex.value === index) {
@@ -75,6 +77,12 @@ const TemplateList = ({ templateList }: Props) => {
   // redirect to edit page
   const handelRedirect = (templateName: string) => {
     route(`/edit/${templateName}`);
+  };
+
+  // download template
+  const handleDownload = async (templateName: string) => {
+    const downloadData = await downloadFn(templateName);
+    console.log(downloadData);
   };
 
   return (
@@ -150,9 +158,10 @@ const TemplateList = ({ templateList }: Props) => {
                       >
                         <IconButton
                           type="button"
-                          label="Download"
+                          label={"Download"}
                           src={downloadIcon}
                           alt="download"
+                          onClick={() => handleDownload(template.TemplateName!)}
                         />
                         <IconButton
                           type="button"

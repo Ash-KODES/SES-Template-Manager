@@ -1,6 +1,5 @@
 import { Placeholder } from "@/constant/placeholders";
-import { CreateTemplateSchema } from "@/schema/forms-schema";
-import { addNewTemplate } from "@api/ses";
+import useAddTemplate from "@/hooks/useAddTemplate";
 import Button from "@components/Button";
 import Input from "@components/Input";
 import TextArea from "@components/TextArea";
@@ -13,33 +12,15 @@ const isLoading = signal(false);
 
 const AddTemplate = () => {
   const formRef = useRef<HTMLFormElement>(null);
+  const getAdd = useAddTemplate();
 
   const handleCreate = async (e: ChangeEvent) => {
     e.preventDefault();
     isLoading.value = true;
-    try {
-      if (formRef.current) {
-        const formData = new FormData(formRef.current);
-        const formDataObj = Object.fromEntries(formData.entries());
-        const parsedFormVal = CreateTemplateSchema.parse(formDataObj);
-        const { templateName, templateSubject, templateText, tempalteHtml } =
-          parsedFormVal;
-        console.log(templateName, templateSubject, templateText, tempalteHtml);
-        const TemplateContent = {
-          Html: tempalteHtml,
-          Subject: templateSubject,
-          Text: templateText,
-        };
-        const TemplateName = templateName;
-        await addNewTemplate({ TemplateContent, TemplateName });
-        console.log("template created success");
-        isLoading.value = false;
-        route("/");
-      }
-    } catch (error) {
-      console.log(error);
-      isLoading.value = false;
-    }
+    const addTemp = await getAdd({ formRef });
+    console.log("done", addTemp);
+    isLoading.value = false;
+    route("/");
   };
 
   return (
@@ -68,12 +49,7 @@ const AddTemplate = () => {
           name="tempalteHtml"
           placeholder={Placeholder.TemplateHTML}
         />
-        <Button
-          type="submit"
-          isLoading={isLoading}
-          disabled={isLoading}
-          label={"Create Template"}
-        />
+        <Button type="submit" isLoading={isLoading} label={"Create Template"} />
       </form>
     </div>
   );

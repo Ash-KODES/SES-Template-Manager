@@ -4,50 +4,26 @@ import TextArea from "@components/TextArea";
 import { useRef } from "preact/hooks";
 import { ChangeEvent } from "preact/compat";
 import { route } from "preact-router";
-
 import useGetTemplate from "@/hooks/useGetTemplate";
-import { CreateTemplateSchema } from "@/schema/forms-schema";
 import "@css/editTemplate.css";
-import { updateTemplate } from "@api/ses";
+import useUpdateTemplate from "@/hooks/useUpdateTemplate";
 
 interface Props {
   templateName: string;
 }
 
 const EditTemplate = ({ templateName }: Props) => {
-  const localData = JSON.parse(localStorage.getItem("auth") as string);
   const formRef = useRef<HTMLFormElement>(null);
-  // const [isLoading, setIsLoading] = useState(false);
+  const getUpdate = useUpdateTemplate();
 
   const { data, isLoading } = useGetTemplate(templateName);
   // console.log(data.res);
 
   const handleUpdate = async (e: ChangeEvent) => {
     e.preventDefault();
-    // setIsLoading(true);
-    try {
-      if (formRef.current) {
-        const formData = new FormData(formRef.current);
-        const formDataObj = Object.fromEntries(formData.entries());
-        const parsedFormVal = CreateTemplateSchema.parse(formDataObj);
-        const { templateName, templateSubject, templateText, tempalteHtml } =
-          parsedFormVal;
-        console.log(templateName, templateSubject, templateText, tempalteHtml);
-        const TemplateContent = {
-          Html: tempalteHtml,
-          Subject: templateSubject,
-          Text: templateText,
-        };
-        const TemplateName = templateName;
-        await updateTemplate({ TemplateContent, TemplateName });
-        console.log("template update success");
-        // setIsLoading(false);
-        route("/");
-      }
-    } catch (error) {
-      console.log(error);
-      // setIsLoading(false);
-    }
+    const updateData = await getUpdate({ formRef });
+    console.log(updateData);
+    route("/");
   };
   console.log("rendered");
   // console.log(isLoading.value);
