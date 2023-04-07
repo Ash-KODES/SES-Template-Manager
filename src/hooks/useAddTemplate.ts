@@ -6,8 +6,8 @@ import { Ref } from "preact/hooks";
 interface IAdd {
   formRef: Ref<HTMLFormElement>;
 }
-let isLoading = signal(true);
-let error = signal<null | string>(null);
+const isLoading = signal(true);
+const error = signal<null | string>(null);
 
 const useAddTemplate = () => {
   const getAdd = async ({ formRef }: IAdd) => {

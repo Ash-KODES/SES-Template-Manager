@@ -7,8 +7,8 @@ let { Html, Subject, Text } = {
   Subject: "",
   Text: "",
 };
-let isLoading = signal(true);
-let error = signal<null | string>(null);
+const isLoading = signal(true);
+const error = signal<null | string>(null);
 
 const useDownload = () => {
   const downloadFn = async (TemplateName: string) => {
