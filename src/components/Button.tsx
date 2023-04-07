@@ -1,4 +1,4 @@
-import { computed, ReadonlySignal } from "@preact/signals";
+import { computed, ReadonlySignal, useComputed } from "@preact/signals";
 import { HTMLAttributes } from "preact/compat";
 
 interface Props extends HTMLAttributes<HTMLButtonElement> {
@@ -14,17 +14,15 @@ const Button = ({
   variant = "primary",
   ...rest
 }: Props) => {
-  console.log("button rendered");
-
-  const btnLabel = computed(() => (!isLoading?.value ? label : ""));
-  const btnClass = computed(
+  const btnLabel = useComputed(() => (!isLoading?.value ? label : ""));
+  const btnClass = useComputed(
     () =>
       `btn ${variant} ${isLoading?.value ? "btn-loading" : ""} ${
         className ?? ""
       }`
   );
   return (
-    <button className={btnClass.value} {...rest}>
+    <button className={btnClass} {...rest}>
       {btnLabel}
     </button>
   );
