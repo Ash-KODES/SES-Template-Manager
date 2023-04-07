@@ -1,10 +1,6 @@
 import { deleteTemplate } from "@api/ses";
-import { ReadonlySignal, Signal, signal } from "@preact/signals";
+import { Signal, signal } from "@preact/signals";
 import { Ref } from "preact/hooks";
-
-type HookResponse = {
-  error: ReadonlySignal<string>;
-};
 
 interface IDelete {
   formRef: Ref<HTMLFormElement>;
@@ -14,36 +10,39 @@ interface IDelete {
     templateName: string;
   }>;
 }
-
+const isLoading = signal(true);
 const error = signal<null | string>(null);
 
-const useDeleteTemplate = async ({
-  formRef,
-  templateName,
-  isDeleteClick,
-}: IDelete) => {
-  try {
-    if (formRef.current) {
-      const formData = new FormData(formRef.current);
-      const templateInputName = formData.get("templateInputName");
-      console.log(templateInputName);
-      if (templateInputName === templateName) {
-        await deleteTemplate({ TemplateName: templateInputName });
-        console.log(`${templateInputName} is deleted successfully`);
-        // isLoading.value = false;
-        isDeleteClick.value = { isDeleteModel: false, templateName };
-      } else {
-        console.log("template name not matched");
-        // isLoading.value = false;
-      }
-    }
-  } catch (err) {
-    if (err instanceof Error) {
-      error.value = err.message;
-    }
-  }
+const useDeleteTemplate = () => {
+  const getDelete = async ({
+    formRef,
+    templateName,
+    isDeleteClick,
+  }: IDelete) => {
+    try {
+      if (formRef.current) {
+        const formData = new FormData(formRef.current);
+        const templateInputName = formData.get("templateInputName");
+        console.log(templateInputName);
+        if (templateInputName === templateName) {
+          await deleteTemplate({ TemplateName: templateInputName });
+          console.log(`${templateInputName} is deleted successfully`);
 
-  return { error } as HookResponse;
+          isDeleteClick.value = { isDeleteModel: false, templateName };
+        } else {
+          console.log("template name not matched");
+        }
+      }
+    } catch (err) {
+      if (err instanceof Error) {
+        error.value = err.message;
+      }
+    } finally {
+      isLoading.value = false;
+    }
+    return { isLoading, error };
+  };
+  return getDelete;
 };
 
 export default useDeleteTemplate;
