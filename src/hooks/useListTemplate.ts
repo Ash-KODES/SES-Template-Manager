@@ -15,25 +15,24 @@ const { TemplatesMetadata } = {
 const isLoading = signal(true);
 const error = signal<null | string>(null);
 
-const useListTemplate = () => {
-  const getData = async () => {
-    try {
-      const response = await listTemplates();
-      // console.log(response);
-      TemplatesMetadata.value = response.TemplatesMetadata!;
-    } catch (err) {
-      console.log(err);
-      if (err instanceof Error) {
-        error.value = err.message;
-      }
-    } finally {
-      isLoading.value = false;
+const listTemplatesData = async () => {
+  try {
+    const response = await listTemplates();
+    // console.log(response);
+    TemplatesMetadata.value = response.TemplatesMetadata!;
+  } catch (err) {
+    console.log(err);
+    if (err instanceof Error) {
+      error.value = err.message;
     }
-  };
+  } finally {
+    isLoading.value = false;
+  }
+};
+const useListTemplate = () => {
   useEffect(() => {
-    getData();
+    listTemplatesData();
   }, []);
-  // getData();
   return { data: TemplatesMetadata, error, isLoading } as HookResponse;
 };
 

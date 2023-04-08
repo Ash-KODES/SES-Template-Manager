@@ -13,36 +13,37 @@ interface IDelete {
 const isLoading = signal(true);
 const error = signal<null | string>(null);
 
-const useDeleteTemplate = () => {
-  const getDelete = async ({
-    formRef,
-    templateName,
-    isDeleteClick,
-  }: IDelete) => {
-    try {
-      if (formRef.current) {
-        const formData = new FormData(formRef.current);
-        const templateInputName = formData.get("templateInputName");
-        console.log(templateInputName);
-        if (templateInputName === templateName) {
-          await deleteTemplate({ TemplateName: templateInputName });
-          console.log(`${templateInputName} is deleted successfully`);
+const deleteTemp = async ({
+  formRef,
+  templateName,
+  isDeleteClick,
+}: IDelete) => {
+  try {
+    if (formRef.current) {
+      const formData = new FormData(formRef.current);
+      const templateInputName = formData.get("templateInputName");
+      console.log(templateInputName);
+      if (templateInputName === templateName) {
+        await deleteTemplate({ TemplateName: templateInputName });
+        console.log(`${templateInputName} is deleted successfully`);
 
-          isDeleteClick.value = { isDeleteModel: false, templateName };
-        } else {
-          console.log("template name not matched");
-        }
+        isDeleteClick.value = { isDeleteModel: false, templateName };
+      } else {
+        console.log("template name not matched");
       }
-    } catch (err) {
-      if (err instanceof Error) {
-        error.value = err.message;
-      }
-    } finally {
-      isLoading.value = false;
     }
-    return { isLoading, error };
-  };
-  return getDelete;
+  } catch (err) {
+    if (err instanceof Error) {
+      error.value = err.message;
+    }
+  } finally {
+    isLoading.value = false;
+  }
+  return { isLoading, error };
+};
+
+const useDeleteTemplate = () => {
+  return deleteTemp;
 };
 
 export default useDeleteTemplate;
