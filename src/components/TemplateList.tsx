@@ -10,13 +10,14 @@ import IconButton from "@components/IconButton";
 import { EmailTemplateMetadata } from "@aws-sdk/client-sesv2";
 import { useRef } from "preact/hooks";
 import DeleteModel from "@components/DeleteModel";
-import { route } from "preact-router";
+import { Link, route } from "preact-router";
 import {
   ReadonlySignal,
   useComputed,
   signal,
   useSignalEffect,
 } from "@preact/signals";
+import downloadTemplates from "@/hooks/useDownload";
 import useDownload from "@/hooks/useDownload";
 
 interface Props {
@@ -25,8 +26,6 @@ interface Props {
 
 const templateData = signal<EmailTemplateMetadata[]>([]);
 const searchTerms = signal("");
-const isPopUp = signal(false);
-const isActiveIndex = signal<number | null>(null);
 const isDeleteClick = signal({
   isDeleteModel: false,
   templateName: "",
@@ -34,21 +33,17 @@ const isDeleteClick = signal({
 
 const TemplateList = ({ templateList }: Props) => {
   const tempListRef = useRef(null);
-  const downloadFn = useDownload();
+  const downloadTemplates = useDownload();
+  const popUpRef = useRef<HTMLDialogElement[]>([]);
 
   const handlePopUp = (index: number) => {
-    if (isActiveIndex.value === index) {
-      return (isPopUp.value = !isPopUp.value);
+    if (popUpRef.current[index].open) {
+      popUpRef.current[index]?.close();
     } else {
-      (isActiveIndex.value = index), (isPopUp.value = !isPopUp.value);
+      popUpRef.current[index]?.show();
     }
-  };
-
-  // hide model when clicked outside
-  window.onclick = (e) => {
-    if (e.target === tempListRef.current) {
-      isPopUp.value = false;
-    }
+    console.log(index);
+    console.log(popUpRef.current[index]);
   };
 
   // console.log(isActiveIndex.value, isPopUp.value);
@@ -74,14 +69,9 @@ const TemplateList = ({ templateList }: Props) => {
 
   // console.log(searchTerms.value, { templateData, filterData });
 
-  // redirect to edit page
-  const handelRedirect = (templateName: string) => {
-    route(`/edit/${templateName}`);
-  };
-
   // download template
   const handleDownload = async (templateName: string) => {
-    const downloadData = await downloadFn(templateName);
+    const downloadData = await downloadTemplates([templateName]);
     console.log(downloadData);
   };
 
@@ -138,43 +128,36 @@ const TemplateList = ({ templateList }: Props) => {
                     })}
                   </td>
                   <td className="edit-wrapper">
-                    <IconButton
-                      type="button"
-                      label="Edit"
-                      src={editIcon}
-                      alt="edit"
-                      onClick={() =>
-                        template.TemplateName &&
-                        handelRedirect(template.TemplateName)
-                      }
-                    />
+                    <Link href={`/edit/${template.TemplateName}`}>
+                      <IconButton
+                        type="button"
+                        label="Edit"
+                        src={editIcon}
+                        alt="edit"
+                      />
+                    </Link>
 
-                    {isActiveIndex.value === index && (
-                      <dialog
-                        className={`popup-menu ${
-                          isPopUp.value ? "show-popup" : ""
-                        }`}
-                        open={isPopUp.value}
-                      >
-                        <IconButton
-                          type="button"
-                          label={"Download"}
-                          src={downloadIcon}
-                          alt="download"
-                          onClick={() => handleDownload(template.TemplateName!)}
-                        />
-                        <IconButton
-                          type="button"
-                          label="Delete"
-                          src={removeIcon}
-                          alt="delete"
-                          onClick={() =>
-                            template.TemplateName &&
-                            handleDeleteClick(template.TemplateName)
-                          }
-                        />
-                      </dialog>
-                    )}
+                    <dialog
+                      className={`popup-menu `}
+                      ref={(e) => e && popUpRef.current.push(e)}
+                    >
+                      <IconButton
+                        type="button"
+                        label={"Download"}
+                        src={downloadIcon}
+                        alt="download"
+                        onClick={() => handleDownload(template.TemplateName!)}
+                      />
+                      <IconButton
+                        type="button"
+                        label="Delete"
+                        src={removeIcon}
+                        alt="delete"
+                        onClick={() =>
+                          handleDeleteClick(template.TemplateName!)
+                        }
+                      />
+                    </dialog>
                   </td>
                   <td>
                     <img
@@ -192,12 +175,10 @@ const TemplateList = ({ templateList }: Props) => {
           </tbody>
         </table>
       </div>
-      {isDeleteClick.value.isDeleteModel ? (
-        <DeleteModel
-          templateName={isDeleteClick.value.templateName}
-          isDeleteClick={isDeleteClick}
-        />
-      ) : null}
+      <DeleteModel
+        templateName={isDeleteClick.value.templateName}
+        isDeleteClick={isDeleteClick}
+      />
     </div>
   );
 };
