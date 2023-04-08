@@ -19,7 +19,7 @@ const isLoading = signal(false);
 const DeleteModel = ({ templateName, isDeleteClick }: Props) => {
   const deleteRef = useRef(null);
   const formRef = useRef<HTMLFormElement>(null);
-  const getDelete = useDeleteTemplate();
+  const deleteTemplate = useDeleteTemplate();
 
   // hide model when clicked outside
   window.onclick = (e) => {
@@ -32,17 +32,22 @@ const DeleteModel = ({ templateName, isDeleteClick }: Props) => {
   const handleDelete = async (e: ChangeEvent) => {
     e.preventDefault();
     isLoading.value = true;
-    const deleteTemp = await getDelete({
+    const deleteData = await deleteTemplate({
       formRef,
       templateName,
       isDeleteClick,
     });
-    console.log(deleteTemp);
+    console.log(deleteData);
     isLoading.value = false;
   };
 
   return (
-    <div className="delete-model-container" ref={deleteRef}>
+    <div
+      className={`delete-model-container ${
+        isDeleteClick.value.isDeleteModel ? "show-model" : ""
+      }`}
+      ref={deleteRef}
+    >
       <div className="delete-model-wrapper">
         <div className="delete-head-wrapper">
           <img src={lockContainerIcon} alt="lockicon" />
