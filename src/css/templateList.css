@@ -52,6 +52,9 @@ td {
   width: 170px;
   position: relative;
 }
+.edit-wrapper a {
+  text-decoration: none;
+}
 .edit-wrapper button {
   justify-content: center !important;
   border: none !important;
@@ -66,8 +69,6 @@ td {
 
 .popup-menu {
   position: absolute;
-  flex-direction: column;
-  gap: 10px;
   border: 1px solid #e2e5ea;
   background: white;
   padding: 10px;
@@ -78,13 +79,11 @@ td {
   z-index: 5;
 }
 
-.show-popup {
-  display: flex;
-}
-
 .popup-menu button {
   padding: 10px !important;
   width: 100% !important;
+  margin: 5px 0;
+  outline: none;
 }
 .popup-menu button:hover {
   background: #696cff;
