@@ -128,3 +128,24 @@ label {
     transform: rotate(360deg);
   }
 }
+
+.template-data-container form {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin: 15px auto;
+}
+.template-data-container form h2 {
+  color: #2c3f58;
+}
+.template-data-container form > div:first-of-type {
+  width: 40%;
+}
+.template-data-container .btn.primary {
+  width: 25%;
+  margin-left: auto;
+}
+#template-html {
+  height: 250px;
+}
