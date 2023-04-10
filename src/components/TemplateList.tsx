@@ -10,15 +10,15 @@ import IconButton from "@components/IconButton";
 import { EmailTemplateMetadata } from "@aws-sdk/client-sesv2";
 import { useRef } from "preact/hooks";
 import DeleteModel from "@components/DeleteModel";
-import { Link, route } from "preact-router";
+import { Link } from "preact-router";
 import {
   ReadonlySignal,
   useComputed,
   signal,
   useSignalEffect,
 } from "@preact/signals";
-import downloadTemplates from "@/hooks/useDownload";
 import useDownload from "@/hooks/useDownload";
+import { ChangeEvent } from "preact/compat";
 
 interface Props {
   templateList: ReadonlySignal<EmailTemplateMetadata[]>;
@@ -30,6 +30,8 @@ const isDeleteClick = signal({
   isDeleteModel: false,
   templateName: "",
 });
+const checkBoxData = signal<string[]>([]);
+const isCheckedAll = signal(false);
 
 const TemplateList = ({ templateList }: Props) => {
   const tempListRef = useRef(null);
@@ -74,6 +76,28 @@ const TemplateList = ({ templateList }: Props) => {
     const downloadData = await downloadTemplates([templateName]);
     console.log(downloadData);
   };
+  const handleMultiDownload = async () => {
+    const downloadMulti = await downloadTemplates(checkBoxData.value);
+    console.log(downloadMulti);
+  };
+  const handleCheck = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value, checked } = e.currentTarget;
+    if (checked) {
+      checkBoxData.value = [...checkBoxData.value, value];
+    } else {
+      checkBoxData.value = checkBoxData.value.filter((e) => e !== value);
+    }
+  };
+
+  const handleSelectAll = () => {
+    isCheckedAll.value = !isCheckedAll.value;
+    checkBoxData.value = templateData.value.map(
+      (template) => template.TemplateName!
+    );
+    if (!isCheckedAll.value) {
+      checkBoxData.value = [];
+    }
+  };
 
   return (
     <div className="template-list-wrapper" ref={tempListRef}>
@@ -92,6 +116,7 @@ const TemplateList = ({ templateList }: Props) => {
           label="Download"
           src={downloadIcon}
           alt="download"
+          onClick={handleMultiDownload}
         />
         <IconButton
           type="button"
@@ -105,7 +130,11 @@ const TemplateList = ({ templateList }: Props) => {
           <thead>
             <tr>
               <th className="checkbox-data">
-                <CheckBoxInput type="checkbox" label="Template Name" />
+                <CheckBoxInput
+                  type="checkbox"
+                  label="Template Name"
+                  onChange={handleSelectAll}
+                />
               </th>
               <th>Creation date</th>
             </tr>
@@ -118,6 +147,11 @@ const TemplateList = ({ templateList }: Props) => {
                     <CheckBoxInput
                       type="checkbox"
                       label={template.TemplateName as string}
+                      onChange={handleCheck}
+                      checked={checkBoxData.value.includes(
+                        template.TemplateName!
+                      )}
+                      value={template.TemplateName}
                     />
                   </td>
                   <td>
@@ -139,7 +173,7 @@ const TemplateList = ({ templateList }: Props) => {
 
                     <dialog
                       className={`popup-menu `}
-                      ref={(e) => e && popUpRef.current.push(e)}
+                      ref={(e) => popUpRef.current.push(e!)}
                     >
                       <IconButton
                         type="button"
