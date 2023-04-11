@@ -41,16 +41,15 @@ const TemplateList = ({ templateList }: Props) => {
   const popUpRef = useRef<HTMLDialogElement[]>([]);
 
   const handlePopUp = (index: number) => {
-    if (popUpRef.current[index].open) {
+    popUpRef.current.map((val, i) => i != index && val.close());
+    if (popUpRef.current[index]?.open) {
       popUpRef.current[index]?.close();
     } else {
       popUpRef.current[index]?.show();
     }
-    console.log(index);
-    console.log(popUpRef.current[index]);
+    // console.log(index);
+    // console.log(popUpRef.current);
   };
-
-  // console.log(isActiveIndex.value, isPopUp.value);
 
   // search Templates
   const filterData = useComputed(() =>
@@ -192,7 +191,7 @@ const TemplateList = ({ templateList }: Props) => {
 
                     <dialog
                       className={`popup-menu `}
-                      ref={(e) => popUpRef.current.push(e!)}
+                      ref={(e) => (popUpRef.current[index] = e!)}
                     >
                       <IconButton
                         type="button"
