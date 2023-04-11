@@ -19,6 +19,7 @@ import {
 } from "@preact/signals";
 import useDownload from "@/hooks/useDownload";
 import { ChangeEvent } from "preact/compat";
+import useMultiDeleteTemp from "@/hooks/useMultiDeleteTemp";
 
 interface Props {
   templateList: ReadonlySignal<EmailTemplateMetadata[]>;
@@ -36,6 +37,7 @@ const isCheckedAll = signal(false);
 const TemplateList = ({ templateList }: Props) => {
   const tempListRef = useRef(null);
   const downloadTemplates = useDownload();
+  const multiDeleteTemp = useMultiDeleteTemp();
   const popUpRef = useRef<HTMLDialogElement[]>([]);
 
   const handlePopUp = (index: number) => {
@@ -77,9 +79,15 @@ const TemplateList = ({ templateList }: Props) => {
     console.log(downloadData);
   };
   const handleMultiDownload = async () => {
-    const downloadMulti = await downloadTemplates(checkBoxData.value);
-    console.log(downloadMulti);
+    if (checkBoxData.value.length) {
+      const downloadMulti = await downloadTemplates(checkBoxData.value);
+      console.log(downloadMulti);
+    } else {
+      console.log("Not selected any template");
+    }
   };
+
+  // get checkbox values
   const handleCheck = (e: ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.currentTarget;
     if (checked) {
@@ -96,6 +104,16 @@ const TemplateList = ({ templateList }: Props) => {
     );
     if (!isCheckedAll.value) {
       checkBoxData.value = [];
+    }
+  };
+
+  // delete multiple templates
+  const handleMultiDelete = async () => {
+    if (checkBoxData.value.length) {
+      const multiDelete = await multiDeleteTemp(checkBoxData.value);
+      console.log(multiDelete);
+    } else {
+      console.log("Not selected any template");
     }
   };
 
@@ -123,6 +141,7 @@ const TemplateList = ({ templateList }: Props) => {
           label="Delete"
           src={removeIcon}
           alt="delete"
+          onClick={handleMultiDelete}
         />
       </div>
       <div className="template-data-container">
