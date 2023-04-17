@@ -8,58 +8,113 @@ import "@css/templateList.css";
 import CheckBoxInput from "@components/CheckBoxInput";
 import IconButton from "@components/IconButton";
 import { EmailTemplateMetadata } from "@aws-sdk/client-sesv2";
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useRef } from "preact/hooks";
 import DeleteModel from "@components/DeleteModel";
+import { Link } from "preact-router";
+import {
+  ReadonlySignal,
+  useComputed,
+  signal,
+  useSignalEffect,
+} from "@preact/signals";
+import useDownload from "@/hooks/useDownload";
+import { ChangeEvent } from "preact/compat";
+import useMultiDeleteTemp from "@/hooks/useMultiDeleteTemp";
 
 interface Props {
-  templateList: EmailTemplateMetadata[];
+  templateList: ReadonlySignal<EmailTemplateMetadata[]>;
 }
 
-const TemplateList = ({ templateList }: Props) => {
-  const [templateData, setTemplateData] = useState(templateList);
-  const [searchTerms, setSearchTerms] = useState("");
-  const [isPopUp, setIsPopUp] = useState(false);
-  const [isActiveIndex, setisActiveIndex] = useState<number>();
-  const [isDeleteClick, setIsDeleteClick] = useState({
-    isDeleteModel: false,
-    templateName: "",
-  });
+const templateData = signal<EmailTemplateMetadata[]>([]);
+const searchTerms = signal("");
+const isDeleteClick = signal({
+  isDeleteModel: false,
+  templateName: "",
+});
+const checkBoxData = signal<string[]>([]);
+const isCheckedAll = signal(false);
 
+const TemplateList = ({ templateList }: Props) => {
   const tempListRef = useRef(null);
+  const downloadTemplates = useDownload();
+  const multiDeleteTemp = useMultiDeleteTemp();
+  const popUpRef = useRef<HTMLDialogElement[]>([]);
 
   const handlePopUp = (index: number) => {
-    if (isActiveIndex === index) {
-      return setIsPopUp(!isPopUp);
+    popUpRef.current.map((val, i) => i != index && val.close());
+    if (popUpRef.current[index]?.open) {
+      popUpRef.current[index]?.close();
     } else {
-      setisActiveIndex(index), setIsPopUp(!isPopUp);
+      popUpRef.current[index]?.show();
     }
+    // console.log(index);
+    // console.log(popUpRef.current);
   };
-
-  // hide model when clicked outside
-  window.onclick = (e) => {
-    if (e.target === tempListRef.current) {
-      setIsPopUp(false);
-    }
-  };
-
-  // console.log({ isActiveIndex, isPopUp });
 
   // search Templates
-  const filterData = templateList.filter((val) =>
-    val.TemplateName?.toLowerCase().includes(searchTerms.toLowerCase())
+  const filterData = useComputed(() =>
+    templateList.value.filter((val) =>
+      val.TemplateName?.toLowerCase().includes(searchTerms.value.toLowerCase())
+    )
   );
+  // console.log(filterData.value);
+  // console.log("templateData.value", templateData.value);
 
-  useEffect(() => {
-    setTemplateData(filterData);
-  }, [searchTerms]);
+  useSignalEffect(() => {
+    templateData.value = filterData.value;
+  });
 
   // on delete btn clicked open delete model with template name
 
   const handleDeleteClick = (templateName: string) => {
-    setIsDeleteClick({ isDeleteModel: true, templateName });
+    isDeleteClick.value = { isDeleteModel: true, templateName };
   };
 
-  // console.log({ searchTerms, templateData, filterData });
+  // console.log(searchTerms.value, { templateData, filterData });
+
+  // download template
+  const handleDownload = async (templateName: string) => {
+    const downloadData = await downloadTemplates([templateName]);
+    console.log(downloadData);
+  };
+  const handleMultiDownload = async () => {
+    if (checkBoxData.value.length) {
+      const downloadMulti = await downloadTemplates(checkBoxData.value);
+      console.log(downloadMulti);
+    } else {
+      console.log("Not selected any template");
+    }
+  };
+
+  // get checkbox values
+  const handleCheck = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value, checked } = e.currentTarget;
+    if (checked) {
+      checkBoxData.value = [...checkBoxData.value, value];
+    } else {
+      checkBoxData.value = checkBoxData.value.filter((e) => e !== value);
+    }
+  };
+
+  const handleSelectAll = () => {
+    isCheckedAll.value = !isCheckedAll.value;
+    checkBoxData.value = templateData.value.map(
+      (template) => template.TemplateName!
+    );
+    if (!isCheckedAll.value) {
+      checkBoxData.value = [];
+    }
+  };
+
+  // delete multiple templates
+  const handleMultiDelete = async () => {
+    if (checkBoxData.value.length) {
+      const multiDelete = await multiDeleteTemp(checkBoxData.value);
+      console.log(multiDelete);
+    } else {
+      console.log("Not selected any template");
+    }
+  };
 
   return (
     <div className="template-list-wrapper" ref={tempListRef}>
@@ -70,7 +125,7 @@ const TemplateList = ({ templateList }: Props) => {
           src={searchIcon}
           alt="searchIcon"
           placeholder="Search for your templates"
-          onInput={(e) => setSearchTerms(e.currentTarget.value)}
+          onInput={(e) => (searchTerms.value = e.currentTarget.value)}
           value={searchTerms}
         />
         <IconButton
@@ -78,57 +133,72 @@ const TemplateList = ({ templateList }: Props) => {
           label="Download"
           src={downloadIcon}
           alt="download"
+          onClick={handleMultiDownload}
         />
         <IconButton
           type="button"
           label="Delete"
           src={removeIcon}
           alt="delete"
+          onClick={handleMultiDelete}
         />
       </div>
       <div className="template-data-container">
         <table className="tabel">
-          <tr>
-            <th className="checkbox-data">
-              <CheckBoxInput type="checkbox" label="Template Name" />
-            </th>
-            <th>Creation date</th>
-          </tr>
+          <thead>
+            <tr>
+              <th className="checkbox-data">
+                <CheckBoxInput
+                  type="checkbox"
+                  label="Template Name"
+                  onChange={handleSelectAll}
+                />
+              </th>
+              <th>Creation date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filterData.value.length ? (
+              templateData.value.map((template, index) => (
+                <tr key={index}>
+                  <td className="checkbox-data">
+                    <CheckBoxInput
+                      type="checkbox"
+                      label={template.TemplateName as string}
+                      onChange={handleCheck}
+                      checked={checkBoxData.value.includes(
+                        template.TemplateName!
+                      )}
+                      value={template.TemplateName}
+                    />
+                  </td>
+                  <td>
+                    {template.CreatedTimestamp?.toLocaleDateString("en-in", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </td>
+                  <td className="edit-wrapper">
+                    <Link href={`/edit/${template.TemplateName}`}>
+                      <IconButton
+                        type="button"
+                        label="Edit"
+                        src={editIcon}
+                        alt="edit"
+                      />
+                    </Link>
 
-          {filterData.length ? (
-            templateData.map((template, index) => (
-              <tr key={index}>
-                <td className="checkbox-data">
-                  <CheckBoxInput
-                    type="checkbox"
-                    label={template.TemplateName as string}
-                  />
-                </td>
-                <td>
-                  {template.CreatedTimestamp?.toLocaleDateString("en-in", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </td>
-                <td className="edit-wrapper">
-                  <IconButton
-                    type="button"
-                    label="Edit"
-                    src={editIcon}
-                    alt="edit"
-                  />
-
-                  {isActiveIndex === index && (
                     <dialog
-                      className={`popup-menu ${isPopUp ? "show-popup" : ""}`}
-                      open={isPopUp}
+                      className={`popup-menu `}
+                      ref={(e) => (popUpRef.current[index] = e!)}
                     >
                       <IconButton
                         type="button"
-                        label="Download"
+                        label={"Download"}
                         src={downloadIcon}
                         alt="download"
+                        onClick={() => handleDownload(template.TemplateName!)}
                       />
                       <IconButton
                         type="button"
@@ -136,34 +206,31 @@ const TemplateList = ({ templateList }: Props) => {
                         src={removeIcon}
                         alt="delete"
                         onClick={() =>
-                          template.TemplateName &&
-                          handleDeleteClick(template.TemplateName)
+                          handleDeleteClick(template.TemplateName!)
                         }
                       />
                     </dialog>
-                  )}
-                </td>
-                <td>
-                  <img
-                    className="menu-icon"
-                    src={menuIcon}
-                    alt="menu"
-                    onClick={() => handlePopUp(index)}
-                  />
-                </td>
-              </tr>
-            ))
-          ) : (
-            <div>No Result Found</div>
-          )}
+                  </td>
+                  <td>
+                    <img
+                      className="menu-icon"
+                      src={menuIcon}
+                      alt="menu"
+                      onClick={() => handlePopUp(index)}
+                    />
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <div>No Result Found</div>
+            )}
+          </tbody>
         </table>
       </div>
-      {isDeleteClick.isDeleteModel ? (
-        <DeleteModel
-          templateName={isDeleteClick.templateName}
-          setIsDeleteClick={setIsDeleteClick}
-        />
-      ) : null}
+      <DeleteModel
+        templateName={isDeleteClick.value.templateName}
+        isDeleteClick={isDeleteClick}
+      />
     </div>
   );
 };

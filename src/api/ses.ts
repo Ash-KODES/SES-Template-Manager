@@ -1,11 +1,17 @@
 import {
-  SESv2Client, ListEmailTemplatesCommand,
-  CreateEmailTemplateCommand, CreateEmailTemplateCommandInput,
+  SESv2Client,
+  ListEmailTemplatesCommand,
+  CreateEmailTemplateCommand,
+  CreateEmailTemplateCommandInput,
   DeleteEmailTemplateCommand,
-  DeleteEmailTemplateCommandInput
+  DeleteEmailTemplateCommandInput,
+  GetEmailTemplateCommand,
+  GetEmailTemplateCommandInput,
+  UpdateEmailTemplateCommand,
+  UpdateEmailTemplateCommandInput,
 } from "@aws-sdk/client-sesv2";
 
-import { AwsCredentialIdentity} from "@aws-sdk/types";
+import { AwsCredentialIdentity } from "@aws-sdk/types";
 
 let sesClient: SESv2Client;
 
@@ -34,11 +40,23 @@ export const listTemplates = (NextToken?: string) => {
 export const addNewTemplate = (input: CreateEmailTemplateCommandInput) => {
   const command = new CreateEmailTemplateCommand(input);
   return sesClient.send(command);
-}
+};
 
 // Delete existing Template
 
-export const deleteTemplate = (input:DeleteEmailTemplateCommandInput) => {
+export const deleteTemplate = (input: DeleteEmailTemplateCommandInput) => {
   const command = new DeleteEmailTemplateCommand(input);
   return sesClient.send(command);
-}
+};
+
+// Get template data
+export const getTemplate = (input: GetEmailTemplateCommandInput) => {
+  const command = new GetEmailTemplateCommand(input);
+  return sesClient.send(command);
+};
+
+//update template data
+export const updateTemplate = (input: UpdateEmailTemplateCommandInput) => {
+  const command = new UpdateEmailTemplateCommand(input);
+  return sesClient.send(command);
+};
