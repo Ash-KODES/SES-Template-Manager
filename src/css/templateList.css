@@ -1,6 +1,5 @@
 .template-list-wrapper {
   width: 90%;
-  height: 100%;
 }
 .top-navigation-wrapper {
   display: flex;
@@ -13,9 +12,7 @@
 .top-navigation-wrapper .search-input-wrapper {
   width: 50%;
 }
-.template-data-container {
-  max-width: 950px;
-}
+
 table {
   width: 100%;
   margin-top: 20px;
@@ -95,4 +92,26 @@ td {
 
 .menu-icon {
   cursor: pointer;
+}
+
+@media (max-width: 426px) {
+  .top-navigation-wrapper {
+    flex-wrap: wrap;
+    gap: 10px;
+    height: 40px;
+  }
+  .top-navigation-wrapper .search-input-wrapper {
+    width: 65%;
+  }
+  table {
+    margin-top: 20%;
+    overflow-x: auto;
+  }
+  .popup-menu {
+    width: 125px;
+    padding: 0px;
+  }
+  .popup-menu button {
+    padding: 5px !important;
+  }
 }
