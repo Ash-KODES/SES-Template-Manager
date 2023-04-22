@@ -45,3 +45,9 @@
 .delete-content-wrapper .btn-loading {
   background-color: #fc6045;
 }
+
+@media (max-width: 426px) {
+  .delete-model-wrapper {
+    width: 80%;
+  }
+}
