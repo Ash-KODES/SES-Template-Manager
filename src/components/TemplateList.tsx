@@ -198,6 +198,25 @@ const TemplateList = ({ templateList, isLoading }: Props) => {
                       alt="edit"
                     />
                   </Link>
+                  <dialog
+                    className={`popup-menu `}
+                    ref={(e) => (popUpRef.current[index] = e!)}
+                  >
+                    <IconButton
+                      type="button"
+                      label={"Download"}
+                      src={downloadIcon}
+                      alt="download"
+                      onClick={() => handleDownload(template.TemplateName!)}
+                    />
+                    <IconButton
+                      type="button"
+                      label="Delete"
+                      src={removeIcon}
+                      alt="delete"
+                      onClick={() => handleDeleteClick(template.TemplateName!)}
+                    />
+                  </dialog>
                 </td>
                 <td class="text-right">
                   <img
