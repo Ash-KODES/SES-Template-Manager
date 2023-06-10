@@ -8,15 +8,11 @@ const Home = () => {
   // console.log(data.value);
   console.log("rendered");
 
-  if (isLoading.value) {
-    return <h1>Loading...</h1>;
-  }
-
   return (
     <div className="home-section">
       <div className="template-wrapper">
-        {data.value.length ? (
-          <TemplateList templateList={data} />
+        {isLoading.value || data.value.length ? (
+          <TemplateList isLoading={isLoading} templateList={data} />
         ) : (
           <NoTemplate />
         )}

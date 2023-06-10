@@ -21,9 +21,11 @@ import useDownload from "@/hooks/useDownload";
 import { ChangeEvent } from "preact/compat";
 import useMultiDeleteTemp from "@/hooks/useMultiDeleteTemp";
 import Button from "./Button";
+import TemplateItemSkeleton from "./TemplateItemSkeleton";
 
 interface Props {
   templateList: ReadonlySignal<EmailTemplateMetadata[]>;
+  isLoading: ReadonlySignal<boolean>;
 }
 
 const templateData = signal<EmailTemplateMetadata[]>([]);
@@ -35,7 +37,7 @@ const isDeleteClick = signal({
 const checkBoxData = signal<string[]>([]);
 const isCheckedAll = signal(false);
 
-const TemplateList = ({ templateList }: Props) => {
+const TemplateList = ({ templateList, isLoading }: Props) => {
   const tempListRef = useRef(null);
   const downloadTemplates = useDownload();
   const multiDeleteTemp = useMultiDeleteTemp();
@@ -159,76 +161,54 @@ const TemplateList = ({ templateList }: Props) => {
                   onChange={handleSelectAll}
                 />
               </th>
-              <th>Creation date</th>
+              <th>Created at</th>
             </tr>
           </thead>
           <tbody>
-            {filterData.value.length ? (
-              templateData.value.map((template, index) => (
-                <tr key={index}>
-                  <td className="checkbox-data">
-                    <CheckBoxInput
-                      type="checkbox"
-                      label={template.TemplateName as string}
-                      onChange={handleCheck}
-                      checked={checkBoxData.value.includes(
-                        template.TemplateName!
-                      )}
-                      value={template.TemplateName}
-                    />
-                  </td>
-                  <td>
-                    {template.CreatedTimestamp?.toLocaleDateString("en-in", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </td>
-                  <td className="edit-wrapper">
-                    <Link href={`/edit/${template.TemplateName}`}>
-                      <IconButton
-                        type="button"
-                        label="Edit"
-                        src={editIcon}
-                        alt="edit"
-                      />
-                    </Link>
+            {isLoading.value
+              ? Array.from({ length: 7 }).map(() => <TemplateItemSkeleton />)
+              : null}
 
-                    <dialog
-                      className={`popup-menu `}
-                      ref={(e) => (popUpRef.current[index] = e!)}
-                    >
-                      <IconButton
-                        type="button"
-                        label={"Download"}
-                        src={downloadIcon}
-                        alt="download"
-                        onClick={() => handleDownload(template.TemplateName!)}
-                      />
-                      <IconButton
-                        type="button"
-                        label="Delete"
-                        src={removeIcon}
-                        alt="delete"
-                        onClick={() =>
-                          handleDeleteClick(template.TemplateName!)
-                        }
-                      />
-                    </dialog>
-                  </td>
-                  <td>
-                    <img
-                      className="menu-icon"
-                      src={menuIcon}
-                      alt="menu"
-                      onClick={() => handlePopUp(index)}
+            {templateData?.value?.map((template, index) => (
+              <tr key={index}>
+                <td className="checkbox-data">
+                  <CheckBoxInput
+                    type="checkbox"
+                    label={template.TemplateName as string}
+                    onChange={handleCheck}
+                    checked={checkBoxData.value.includes(
+                      template.TemplateName!
+                    )}
+                    value={template.TemplateName}
+                  />
+                </td>
+                <td>
+                  {template.CreatedTimestamp?.toLocaleDateString("en-in", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </td>
+                <td className="edit-wrapper">
+                  <Link href={`/edit/${template.TemplateName}`}>
+                    <IconButton
+                      type="button"
+                      label="Edit"
+                      src={editIcon}
+                      alt="edit"
                     />
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <div>No Result Found</div>
-            )}
+                  </Link>
+                </td>
+                <td class="text-right">
+                  <img
+                    className="menu-icon"
+                    src={menuIcon}
+                    alt="menu"
+                    onClick={() => handlePopUp(index)}
+                  />
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
