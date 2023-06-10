@@ -20,6 +20,7 @@ import {
 import useDownload from "@/hooks/useDownload";
 import { ChangeEvent } from "preact/compat";
 import useMultiDeleteTemp from "@/hooks/useMultiDeleteTemp";
+import Button from "./Button";
 
 interface Props {
   templateList: ReadonlySignal<EmailTemplateMetadata[]>;
@@ -128,6 +129,9 @@ const TemplateList = ({ templateList }: Props) => {
           onInput={(e) => (searchTerms.value = e.currentTarget.value)}
           value={searchTerms}
         />
+        <Link href="/new" class="btn primary" title="Create template">
+          Create Template
+        </Link>
         <IconButton
           type="button"
           label="Download"
@@ -135,6 +139,7 @@ const TemplateList = ({ templateList }: Props) => {
           alt="download"
           onClick={handleMultiDownload}
         />
+
         <IconButton
           type="button"
           label="Delete"
