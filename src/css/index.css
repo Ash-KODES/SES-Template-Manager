@@ -35,11 +35,13 @@ label {
 
 .btn.primary {
   background: #696cff;
+  text-decoration: none;
   border-radius: 6px;
   border: none;
+  white-space: nowrap;
   color: white;
-  width: 100%;
-  padding: 12px 6px;
+  /* width: 100%; */
+  padding: 12px 24px;
   cursor: pointer;
   font-size: 16px;
   line-height: 24px;
