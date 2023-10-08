@@ -7,6 +7,7 @@ import Button from "@components/Button";
 import Input from "@components/Input";
 import { AuthSchema } from "@/schema/forms-schema";
 import CheckBoxInput from "@components/CheckBoxInput";
+import ls from "localstorage-slim";
 
 const Auth = () => {
   const [authText, setAuthText] = useState("Authenticate");
@@ -27,10 +28,9 @@ const Auth = () => {
 
         await listTemplates();
         if (parsedFormVal["save-credential-checkbox"]) {
-          localStorage.setItem(
-            "auth",
-            JSON.stringify({ accessKeyId, secretAccessKey })
-          );
+          ls.set("auth", JSON.stringify({ accessKeyId, secretAccessKey }), {
+            ttl: 1000,
+          });
         }
         console.log("auth success");
         route("/");

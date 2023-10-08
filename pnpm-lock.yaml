@@ -11,6 +11,9 @@ dependencies:
   file-saver:
     specifier: ^2.0.5
     version: 2.0.5
+  localstorage-slim:
+    specifier: ^2.6.0
+    version: 2.6.0
   preact:
     specifier: ^10.13.2
     version: 10.13.2
@@ -2035,6 +2038,10 @@ packages:
     resolution: {integrity: sha512-SFppqq5p42fe2qcZQqqEOiVRXl+WCP1MdT6k7BDEW1j++sp5fIY+/fdRQitvKgB5BrBcmrs5m/L0v2FrU5MY1g==}
     engines: {node: '>=14'}
     dev: true
+
+  /localstorage-slim@2.6.0:
+    resolution: {integrity: sha512-IYL4sj+uvmhN1jDlPi6H7ucuDSOM/7o71Ib7jBytioN0jv2EdZ6TR2GGLDw5XAChq0LeVUpztkYTA4+Z5EJxLw==}
+    dev: false
 
   /locate-path@6.0.0:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}

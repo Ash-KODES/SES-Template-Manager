@@ -11,10 +11,11 @@ import AddTemplate from "@page/AddTemplate";
 import { useState } from "preact/hooks";
 import EditTemplate from "@page/EditTemplate";
 import { setupSesClient } from "@api/ses";
+import ls from "localstorage-slim";
 
 export function App() {
   let [currentUrl, setcurrentUrl] = useState(getCurrentUrl());
-  const localData = JSON.parse(localStorage.getItem("auth") as string);
+  const localData = JSON.parse(ls.get("auth") as string);
 
   const publicRoute = ["/auth"];
 
