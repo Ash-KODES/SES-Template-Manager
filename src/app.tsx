@@ -15,17 +15,23 @@ import ls from "localstorage-slim";
 
 export function App() {
   let [currentUrl, setcurrentUrl] = useState(getCurrentUrl());
-  const localData = JSON.parse(ls.get("auth") as string);
+  const accessKeyId = ls.get("auth_accessKeyID");
+  const secretAccessKey = ls.get("auth_secretAccessKey");
 
   const publicRoute = ["/auth"];
 
-  if (!publicRoute.includes(currentUrl) && localData === null) {
+  if (
+    !publicRoute.includes(currentUrl) &&
+    (accessKeyId === null || secretAccessKey === null)
+  ) {
     setcurrentUrl("/auth");
   }
 
-  if (localData !== null) {
-    const { accessKeyId, secretAccessKey } = localData;
-    setupSesClient({ accessKeyId, secretAccessKey });
+  if (accessKeyId !== null && secretAccessKey !== null) {
+    setupSesClient({
+      accessKeyId: accessKeyId as string,
+      secretAccessKey: secretAccessKey as string,
+    });
   }
 
   return (

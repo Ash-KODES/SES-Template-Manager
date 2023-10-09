@@ -27,10 +27,12 @@ const Auth = () => {
         setupSesClient({ accessKeyId, secretAccessKey });
 
         await listTemplates();
+        const ttlInMilliseconds = 45 * 24 * 60 * 60 * 1000;
         if (parsedFormVal["save-credential-checkbox"]) {
-          ls.set("auth", JSON.stringify({ accessKeyId, secretAccessKey }), {
-            ttl: 1000,
+          ls.set("auth_secretAccessKey", secretAccessKey, {
+            ttl: ttlInMilliseconds,
           });
+          ls.set("auth_accessKeyId", accessKeyId);
         }
         console.log("auth success");
         route("/");
