@@ -27,7 +27,7 @@ export function App() {
     setcurrentUrl("/auth");
   }
 
-  if (accessKeyId !== null && secretAccessKey !== null) {
+  if (accessKeyId !== null || secretAccessKey !== null) {
     setupSesClient({
       accessKeyId: accessKeyId as string,
       secretAccessKey: secretAccessKey as string,
